@@ -16,9 +16,9 @@ public class RecyclerViewScrollListener extends RecyclerView.OnScrollListener{
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
         if (newState==0) {
-            chatView.hideDate();
+            chatView.hideMessageDate();
         }else {
-            chatView.showDate();
+            chatView.showMessageDate();
         }
     }
 }

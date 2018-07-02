@@ -1,6 +1,5 @@
 package com.lionel.chatroom.chat.presenter;
 
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.lionel.chatroom.chat.adapter.RecyclerAdapter;
 import com.lionel.chatroom.chat.model.ChatModel;
 import com.lionel.chatroom.chat.model.IChatModel;
@@ -16,6 +15,27 @@ public class ChatPresenterImpl implements IChatPresenter {
         chatModel = new ChatModel(ChatPresenterImpl.this);
     }
 
+    @Override
+    public void initAdapterParams() {
+        chatModel.needUserName();
+        chatModel.needAdapterOptions();
+    }
+
+    @Override
+    public void onAdapterParamsInitDone() {
+        chatView.recyclerAdapterIsReady();
+    }
+
+    @Override
+    public RecyclerAdapter getAdapter() {
+        adapter = new RecyclerAdapter(chatModel.getAdapterOptions(), chatModel.getUserName());
+        return adapter;
+    }
+
+    @Override
+    public String fetchMessageDate() {
+        return adapter.fetchDate();
+    }
 
     @Override
     public void sendMessage(String msg) {
@@ -26,17 +46,5 @@ public class ChatPresenterImpl implements IChatPresenter {
     public void onSendMessageFailure() {
         String msg = "訊息發送失敗";
         chatView.onSendMessageFailure(msg);
-    }
-
-    @Override
-    public RecyclerAdapter getAdapter() {
-        FirebaseRecyclerOptions options = chatModel.getAdapterOptions();
-        adapter = new RecyclerAdapter(options, chatModel.getUserName());
-        return (adapter);
-    }
-
-    @Override
-    public String fetchDate() {
-        return adapter.fetchDate();
     }
 }

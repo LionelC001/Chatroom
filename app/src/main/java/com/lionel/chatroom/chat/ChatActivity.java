@@ -32,13 +32,23 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         chatPresenter = new ChatPresenterImpl(this);
 
         initView();
-        setupRecyclerView();
     }
 
     private void initView() {
         mEdtMsg = findViewById(R.id.edtMsg);
         mRecyclerViewChat = findViewById(R.id.recyclerViewChat);
         mTxtDate = findViewById(R.id.txt_date);
+        needRecyclerAdapter();
+    }
+
+    @Override
+    public void needRecyclerAdapter() {
+        chatPresenter.initAdapterParams();
+    }
+
+    @Override
+    public void recyclerAdapterIsReady() {
+        setupRecyclerView();
     }
 
     private void setupRecyclerView() {
@@ -52,8 +62,43 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
 
         //捲動recyclerview時,顯示日期
         mRecyclerViewChat.addOnScrollListener(new RecyclerViewScrollListener(ChatActivity.this));
+
+        //Adapter開始對Firebase Database傾聽
+        adapter.startListening();
+        //開始對adapter的data傾聽
+        adapter.registerAdapterDataObserver(adapterDataObserver);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+            adapter.registerAdapterDataObserver(adapterDataObserver);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+            adapter.unregisterAdapterDataObserver(adapterDataObserver);
+        }
+    }
+
+    @Override
+    public void showMessageDate() {
+        mTxtDate.setText(chatPresenter.fetchMessageDate());
+        mTxtDate.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideMessageDate() {
+        mTxtDate.setVisibility(View.GONE);
+    }
+
+    //發送訊息
     public void onSend(View view) {
         String msg = mEdtMsg.getText().toString();
         chatPresenter.sendMessage(msg);
@@ -63,32 +108,5 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     @Override
     public void onSendMessageFailure(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //開始對Firebase Database傾聽
-        adapter.startListening();
-        //開始對adapter的data傾聽
-        adapter.registerAdapterDataObserver(adapterDataObserver);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-        adapter.unregisterAdapterDataObserver(adapterDataObserver);
-    }
-
-    @Override
-    public void showDate() {
-        mTxtDate.setText(chatPresenter.fetchDate());
-        mTxtDate.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideDate() {
-        mTxtDate.setVisibility(View.GONE);
     }
 }

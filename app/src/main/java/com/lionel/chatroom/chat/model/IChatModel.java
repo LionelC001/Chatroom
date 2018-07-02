@@ -4,14 +4,20 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 public interface IChatModel {
     //從Database中確認使用者名稱
-    void checkUserName();
+    void needUserName();
+
+    //更改使用者名稱
+    void changeUserName();
+
     //回傳使用者名稱
     String getUserName();
 
-
-    //發送訊息
-    void sendMessage(String msg);
+    //開始製作AdapterOptions物件
+    void needAdapterOptions();
 
     // 回傳FirebaseRecyclerAdapter建構所需參數
     FirebaseRecyclerOptions getAdapterOptions();
+
+    //發送訊息
+    void sendMessage(String msg);
 }
