@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class ChatMessage {
-    private String name, message;
+    private String name, message, email;
     private long time;
 
     ChatMessage() {
@@ -13,6 +13,7 @@ public class ChatMessage {
     ChatMessage(String name, String message, String email) {
         this.name = name;
         this.message = message;
+        this.email = email;
         this.time = Calendar.getInstance().getTimeInMillis();
     }
 
@@ -23,6 +24,8 @@ public class ChatMessage {
     public String getMessage() {
         return message;
     }
+
+    public String getEmail() { return email;}
 
     public long getTime() {
         return time;

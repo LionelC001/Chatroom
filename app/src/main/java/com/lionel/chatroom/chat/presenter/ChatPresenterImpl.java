@@ -1,7 +1,5 @@
 package com.lionel.chatroom.chat.presenter;
 
-import android.util.Log;
-
 import com.lionel.chatroom.chat.adapter.RecyclerAdapter;
 import com.lionel.chatroom.chat.model.ChatModel;
 import com.lionel.chatroom.chat.model.IChatModel;
@@ -19,7 +17,7 @@ public class ChatPresenterImpl implements IChatPresenter {
 
     @Override
     public void initAdapterParams() {
-        chatModel.needUserName();
+        chatModel.needUserData();
         chatModel.needAdapterOptions();
     }
 
@@ -30,7 +28,7 @@ public class ChatPresenterImpl implements IChatPresenter {
 
     @Override
     public RecyclerAdapter getAdapter() {
-        adapter = new RecyclerAdapter(chatModel.getAdapterOptions(), chatModel.getUserName());
+        adapter = new RecyclerAdapter(chatModel.getAdapterOptions(), chatModel.getUserEmail());
         return adapter;
     }
 
@@ -58,7 +56,7 @@ public class ChatPresenterImpl implements IChatPresenter {
     }
 
     @Override
-    public void onChangeUserNameSuccess(String newName) {
-        adapter.setUserName(newName);
+    public void onChangeUserNameSuccess() {
+        chatView.onChangeUserNameSuccess();
     }
 }

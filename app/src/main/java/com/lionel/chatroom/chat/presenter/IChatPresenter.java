@@ -6,6 +6,7 @@ public interface IChatPresenter {
     //通知Model發送訊息
     void sendMessage(String msg);
 
+    //發送訊息失敗
     void onSendMessageFailure();
 
     // 準備RecyclerAdapter需要的參數
@@ -23,6 +24,6 @@ public interface IChatPresenter {
     //變更使用者名稱
     void changeUserName(String name);
 
-    //變更名稱成功後, 要將RecyclerAdapter的使用者名稱也變更
-    void onChangeUserNameSuccess(String newName);
+    //變更名稱成功
+    void onChangeUserNameSuccess();
 }

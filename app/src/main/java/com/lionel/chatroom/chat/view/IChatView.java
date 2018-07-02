@@ -16,4 +16,6 @@ public interface IChatView {
     void showMessageDate();
 
     void hideMessageDate();
+
+    void onChangeUserNameSuccess();
 }

@@ -20,13 +20,13 @@ import java.util.List;
 
 public class RecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, RecyclerAdapter.ViewHolder>
         implements IRecyclerAdapter {
-    private String userName;
+    private String userEmail;
     private String date;
     private List<String> dateList;  //用來記錄出現過的訊息日期
 
-    public RecyclerAdapter(@NonNull FirebaseRecyclerOptions<ChatMessage> options, String name) {
+    public RecyclerAdapter(@NonNull FirebaseRecyclerOptions<ChatMessage> options, String email) {
         super(options);
-        userName = name;
+        userEmail = email;
         dateList = Arrays.asList(new String[100]);
     }
 
@@ -59,7 +59,7 @@ public class RecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Recycl
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull ChatMessage model) {
         // 如果是使用者發出的訊息,一律顯示在右側
-        if (model.getName().equals(userName)) {
+        if (model.getEmail().equals(userEmail)) {
             holder.mSpeechBubbleLeft.setVisibility(View.GONE);
             holder.mSpeechBubbleRight.setVisibility(View.VISIBLE);
             holder.mTxtMsgRight.setText(model.getMessage());
@@ -99,10 +99,5 @@ public class RecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Recycl
         // 第一條訊息上方必顯示日期
         // 若和上一條訊息日期不同, 在該訊息上方顯示日期
         return position == 0 || !dateList.get(position).equals(dateList.get(position - 1));
-    }
-
-    @Override
-    public void setUserName(String name) {
-        userName  = name;
     }
 }

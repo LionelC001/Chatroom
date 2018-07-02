@@ -2,7 +2,6 @@ package com.lionel.chatroom.chat.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,7 +17,7 @@ import com.lionel.chatroom.signup.model.UserDataModel;
 
 public class ChatModel implements IChatModel {
     private IChatPresenter chatPresenter;
-    private String userName;
+    private String userName, userEmail;
     private FirebaseRecyclerOptions<ChatMessage> options;
 
     public ChatModel(IChatPresenter presenter) {
@@ -26,8 +25,9 @@ public class ChatModel implements IChatModel {
     }
 
     @Override
-    public void needUserName() {
-        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+    public void needUserData() {
+        userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("user")
@@ -48,7 +48,7 @@ public class ChatModel implements IChatModel {
 
     @Override
     public void changeUserName(final String newName) {
-        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        userName = newName;
         FirebaseDatabase.getInstance()
                 .getReference("user")
                 .child(userEmail.replace(".", ""))
@@ -57,8 +57,7 @@ public class ChatModel implements IChatModel {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        chatPresenter.onChangeUserNameSuccess(newName);
-                        userName = newName;
+                        chatPresenter.onChangeUserNameSuccess();
                     }
                 });
     }
@@ -79,8 +78,8 @@ public class ChatModel implements IChatModel {
     }
 
     @Override
-    public String getUserName() {
-        return userName;
+    public String getUserEmail() {
+        return userEmail;
     }
 
     @Override
@@ -93,14 +92,12 @@ public class ChatModel implements IChatModel {
         FirebaseDatabase.getInstance()
                 .getReference("chat_room")
                 .push()
-                .setValue(new ChatMessage(userName, msg))
+                .setValue(new ChatMessage(userName, msg, userEmail))
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         chatPresenter.onSendMessageFailure();
                     }
                 });
-        Log.d("<<<", "sendMessageName: " + userName);
     }
-
 }

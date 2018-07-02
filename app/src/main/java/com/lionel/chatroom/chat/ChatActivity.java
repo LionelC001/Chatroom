@@ -99,6 +99,9 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                         .setCancelable(true)
                         .show();
                 break;
+            case android.R.id.home:
+                finish();
+                break;
         }
         return true;
     }
@@ -143,5 +146,10 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     @Override
     public void onSendMessageFailure(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onChangeUserNameSuccess() {
+        Toast.makeText(this, "名稱變更成功", Toast.LENGTH_LONG).show();
     }
 }
