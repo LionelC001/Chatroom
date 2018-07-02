@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1080531044463",
+    "firebase_url": "https://chatroom-bee8a.firebaseio.com",
+    "project_id": "chatroom-bee8a",
+    "storage_bucket": "chatroom-bee8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080531044463:android:e32f1e8223233475",
+        "android_client_info": {
+          "package_name": "com.lionel.chatroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080531044463-4in04hsvbbko6jgjo089sjjdbbmgaq4k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lionel.chatroom",
+            "certificate_hash": "dea13258ef6d55856b5cd68dc57d22f0792aa113"
+          }
+        },
+        {
+          "client_id": "1080531044463-u2c75u0dsnsp21t2gu64m8rm6mis6c7k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLN0Ge4LnfzqwbpwTUgshnJR0DNObQ6hw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080531044463-u2c75u0dsnsp21t2gu64m8rm6mis6c7k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
