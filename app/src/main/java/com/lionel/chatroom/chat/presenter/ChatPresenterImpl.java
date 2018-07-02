@@ -1,5 +1,7 @@
 package com.lionel.chatroom.chat.presenter;
 
+import android.util.Log;
+
 import com.lionel.chatroom.chat.adapter.RecyclerAdapter;
 import com.lionel.chatroom.chat.model.ChatModel;
 import com.lionel.chatroom.chat.model.IChatModel;
@@ -37,6 +39,7 @@ public class ChatPresenterImpl implements IChatPresenter {
         return adapter.fetchDate();
     }
 
+
     @Override
     public void sendMessage(String msg) {
         chatModel.sendMessage(msg);
@@ -46,5 +49,16 @@ public class ChatPresenterImpl implements IChatPresenter {
     public void onSendMessageFailure() {
         String msg = "訊息發送失敗";
         chatView.onSendMessageFailure(msg);
+    }
+
+
+    @Override
+    public void changeUserName(String name) {
+        chatModel.changeUserName(name);
+    }
+
+    @Override
+    public void onChangeUserNameSuccess(String newName) {
+        adapter.setUserName(newName);
     }
 }

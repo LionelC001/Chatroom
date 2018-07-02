@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorInput">#559be5</color>
     <color name="colorRed">#a2ff5c67</color>
+    <color name="colorDialogChangeName">#7f444d4d</color>
 </resources>

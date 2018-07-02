@@ -1,9 +1,14 @@
 package com.lionel.chatroom.chat;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -38,6 +43,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         mEdtMsg = findViewById(R.id.edtMsg);
         mRecyclerViewChat = findViewById(R.id.recyclerViewChat);
         mTxtDate = findViewById(R.id.txt_date);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         needRecyclerAdapter();
     }
 
@@ -68,6 +74,35 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         //開始對adapter的data傾聽
         adapter.registerAdapterDataObserver(adapterDataObserver);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_chatview, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_chatview_change_name:
+                View view = LayoutInflater.from(ChatActivity.this).inflate(R.layout.dialog_chatroom_change_name, null);
+                final EditText mEdtDialogChangeName = view.findViewById(R.id.edt_dialog_change_name);
+                new AlertDialog.Builder(ChatActivity.this)
+                        .setView(view)
+                        .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                chatPresenter.changeUserName(mEdtDialogChangeName.getText().toString());
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .setCancelable(true)
+                        .show();
+                break;
+        }
+        return true;
+    }
+
 
     @Override
     protected void onStart() {

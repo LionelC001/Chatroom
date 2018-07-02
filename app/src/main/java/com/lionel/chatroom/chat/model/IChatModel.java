@@ -7,7 +7,7 @@ public interface IChatModel {
     void needUserName();
 
     //更改使用者名稱
-    void changeUserName();
+    void changeUserName(String newName);
 
     //回傳使用者名稱
     String getUserName();

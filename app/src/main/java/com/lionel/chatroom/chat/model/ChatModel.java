@@ -2,9 +2,12 @@ package com.lionel.chatroom.chat.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,7 +31,7 @@ public class ChatModel implements IChatModel {
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("user")
-                .orderByChild("email")
+                .orderByChild("email")  //按路徑下子節點的值做排序
                 .equalTo(userEmail)
                 .addChildEventListener(new FirebaseDatabaseListener() {
                     @Override
@@ -44,8 +47,20 @@ public class ChatModel implements IChatModel {
     }
 
     @Override
-    public void changeUserName() {
-
+    public void changeUserName(final String newName) {
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        FirebaseDatabase.getInstance()
+                .getReference("user")
+                .child(userEmail.replace(".", ""))
+                .child("name")
+                .setValue(newName)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        chatPresenter.onChangeUserNameSuccess(newName);
+                        userName = newName;
+                    }
+                });
     }
 
     @Override
@@ -85,6 +100,7 @@ public class ChatModel implements IChatModel {
                         chatPresenter.onSendMessageFailure();
                     }
                 });
+        Log.d("<<<", "sendMessageName: " + userName);
     }
 
 }

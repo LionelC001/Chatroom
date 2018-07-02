@@ -19,4 +19,10 @@ public interface IChatPresenter {
 
     //向Adapter取得發送訊息時的日期,並回傳
     String fetchMessageDate();
+
+    //變更使用者名稱
+    void changeUserName(String name);
+
+    //變更名稱成功後, 要將RecyclerAdapter的使用者名稱也變更
+    void onChangeUserNameSuccess(String newName);
 }

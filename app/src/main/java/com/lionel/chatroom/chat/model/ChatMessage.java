@@ -10,7 +10,7 @@ public class ChatMessage {
     ChatMessage() {
     }
 
-    ChatMessage(String name, String message) {
+    ChatMessage(String name, String message, String email) {
         this.name = name;
         this.message = message;
         this.time = Calendar.getInstance().getTimeInMillis();

@@ -100,4 +100,9 @@ public class RecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Recycl
         // 若和上一條訊息日期不同, 在該訊息上方顯示日期
         return position == 0 || !dateList.get(position).equals(dateList.get(position - 1));
     }
+
+    @Override
+    public void setUserName(String name) {
+        userName  = name;
+    }
 }

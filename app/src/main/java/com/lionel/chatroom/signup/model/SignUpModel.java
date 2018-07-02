@@ -41,7 +41,7 @@ public class SignUpModel implements ISignUpModel {
     public void saveUserData(String name, String email) {
         FirebaseDatabase.getInstance()
                 .getReference("user")
-                .push()
+                .child(email.replace(".",""))
                 .setValue(new UserDataModel(name, email))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
