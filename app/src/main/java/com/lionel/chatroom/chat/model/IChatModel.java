@@ -20,4 +20,7 @@ public interface IChatModel {
 
     //發送訊息
     void sendMessage(String msg);
+
+    //登出帳號
+    void logout();
 }

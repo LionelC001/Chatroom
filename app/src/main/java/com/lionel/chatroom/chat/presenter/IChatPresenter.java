@@ -26,4 +26,9 @@ public interface IChatPresenter {
 
     //變更名稱成功
     void onChangeUserNameSuccess();
+
+    //請求登出
+    void logout();
+    //登出成功
+    void onLogoutSuccess();
 }

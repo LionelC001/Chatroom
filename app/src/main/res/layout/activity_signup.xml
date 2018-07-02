@@ -23,6 +23,7 @@
             style="@style/MyTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="訪客"
             android:hint="請輸入您的名稱" />
     </android.support.design.widget.TextInputLayout>
 

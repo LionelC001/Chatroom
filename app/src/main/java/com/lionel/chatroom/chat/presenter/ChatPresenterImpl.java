@@ -59,4 +59,14 @@ public class ChatPresenterImpl implements IChatPresenter {
     public void onChangeUserNameSuccess() {
         chatView.onChangeUserNameSuccess();
     }
+
+    @Override
+    public void logout() {
+        chatModel.logout();
+    }
+
+    @Override
+    public void onLogoutSuccess() {
+        chatView.onLogoutSuccess();
+    }
 }

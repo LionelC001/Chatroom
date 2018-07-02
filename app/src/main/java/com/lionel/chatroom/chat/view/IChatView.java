@@ -17,5 +17,9 @@ public interface IChatView {
 
     void hideMessageDate();
 
+    //更改使用者名稱成功
     void onChangeUserNameSuccess();
+
+    // 登出成功
+    void onLogoutSuccess();
 }

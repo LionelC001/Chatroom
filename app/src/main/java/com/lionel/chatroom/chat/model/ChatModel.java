@@ -100,4 +100,10 @@ public class ChatModel implements IChatModel {
                     }
                 });
     }
+
+    @Override
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        chatPresenter.onLogoutSuccess();
+    }
 }
