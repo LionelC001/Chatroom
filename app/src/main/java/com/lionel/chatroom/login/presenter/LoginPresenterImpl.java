@@ -20,14 +20,14 @@ public class LoginPresenterImpl implements ILoginPresenter {
 
     @Override
     public void login(String email, String password) {
-
         if (email.equals("") || password.equals("")) {
             String msg = "欄位不可空白";
-            onFailure(msg);
+            onLoginFailure(msg);
         } else {
             if (isNetworkAvailable()) {
-                loginView.onShowProgress();
-                loginModel.login(email, password);
+                String title = "登入中";
+                loginView.onShowProgress(title);
+                loginModel.login(email.trim(), password);
             } else {
                 loginView.showNeedNetwork();
             }
@@ -35,13 +35,13 @@ public class LoginPresenterImpl implements ILoginPresenter {
     }
 
     @Override
-    public void onSuccess(String msg) {
+    public void onLoginSuccess(String msg) {
         loginView.onLoginSuccess(msg);
         loginView.onHideProgress();
     }
 
     @Override
-    public void onFailure(String msg) {
+    public void onLoginFailure(String msg) {
         loginView.onLoginFailure(msg);
         loginView.onHideProgress();
     }
@@ -55,5 +55,27 @@ public class LoginPresenterImpl implements ILoginPresenter {
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         }
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void doResetPassword(String email) {
+        if (email.equals("")) {
+            String msg = "欄位不可空白";
+            onResetPasswordResult(msg);
+        } else {
+            if (isNetworkAvailable()) {
+                String title = "讀取中";
+                loginView.onShowProgress(title);
+                loginModel.resetPassword(email.trim());
+            } else {
+                loginView.showNeedNetwork();
+            }
+        }
+    }
+
+    @Override
+    public void onResetPasswordResult(String msg) {
+        loginView.showResetPasswordResult(msg);
+        loginView.onHideProgress();
     }
 }

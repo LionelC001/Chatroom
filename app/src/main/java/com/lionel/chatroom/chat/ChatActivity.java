@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -91,21 +90,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_chatview_change_name:
-                View view = LayoutInflater.from(ChatActivity.this).inflate(R.layout.dialog_chatroom_change_name, null);
-                final EditText mEdtDialogChangeName = view.findViewById(R.id.edt_dialog_change_name);
-                new AlertDialog.Builder(ChatActivity.this)
-                        .setTitle("變更名稱")
-                        .setView(view)
-                        .setMessage("(最多12個字)")
-                        .setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                chatPresenter.changeUserName(mEdtDialogChangeName.getText().toString());
-                            }
-                        })
-                        .setNegativeButton("取消", null)
-                        .setCancelable(true)
-                        .show();
+                changeUserName();
                 break;
             case R.id.menu_chatview_log_out:
                 chatPresenter.logout();
@@ -116,7 +101,6 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         }
         return true;
     }
-
 
     @Override
     protected void onStart() {
@@ -159,6 +143,24 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
+    private void changeUserName() {
+        View view = LayoutInflater.from(ChatActivity.this).inflate(R.layout.dialog_chatroom_change_name, null);
+        final EditText mEdtDialogChangeName = view.findViewById(R.id.edt_dialog_change_name);
+        new AlertDialog.Builder(ChatActivity.this)
+                .setTitle("變更名稱")
+                .setView(view)
+                .setMessage("(最多12個字)")
+                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        chatPresenter.changeUserName(mEdtDialogChangeName.getText().toString());
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .setCancelable(true)
+                .show();
+    }
+
     @Override
     public void onChangeUserNameSuccess() {
         Toast.makeText(this, "名稱變更成功", Toast.LENGTH_LONG).show();
@@ -188,7 +190,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
 
         //實現對話框動畫
         Window progressWindow = progress.getWindow();
-        progressWindow.setWindowAnimations(R.style.AnimDialogLoading);
+        progressWindow.setWindowAnimations(R.style.AnimDialog);
     }
 
     @Override

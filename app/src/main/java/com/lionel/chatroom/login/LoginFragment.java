@@ -1,6 +1,7 @@
 package com.lionel.chatroom.login;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,17 +46,24 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mEdtEmail = getView().findViewById(R.id.edt_signup_email);
-        mEdtPassword = getView().findViewById(R.id.edt_signup_password);
+        mEdtEmail = getView().findViewById(R.id.edt_login_email);
+        mEdtPassword = getView().findViewById(R.id.edt_login_password);
         Button mBtnLogin = getView().findViewById(R.id.btn_login);
         mBtnLogin.setOnClickListener(this);
+        TextView mTxtLoginForgotPw = getView().findViewById(R.id.txt_login_forgot_pw);
+        mTxtLoginForgotPw.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId()==R.id.btn_login) {
-            loginPresenter.login(mEdtEmail.getText().toString(),
-                    mEdtPassword.getText().toString());
+        switch (v.getId()) {
+            case R.id.btn_login:
+                loginPresenter.login(mEdtEmail.getText().toString(),
+                        mEdtPassword.getText().toString());
+                break;
+            case R.id.txt_login_forgot_pw:
+                resetPassword();
+                break;
         }
     }
 
@@ -72,11 +81,11 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
     }
 
     @Override
-    public void onShowProgress() {
+    public void onShowProgress(String title) {
         AlertDialog.Builder adBuilder = new AlertDialog.Builder(getActivity());
         progress = adBuilder.create();
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_loading_progress, null);
-        ((TextView) view.findViewById(R.id.txt_progress_title)).setText("登入中");
+        ((TextView) view.findViewById(R.id.txt_progress_title)).setText(title);
         ((TextView) view.findViewById(R.id.txt_progress_message)).setText("請稍後...");
         ((ProgressBar) view.findViewById(R.id.progress_bar)).getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorDialogProgress), PorterDuff.Mode.MULTIPLY);
         progress.setView(view);
@@ -89,7 +98,7 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
 
         //實現對話框動畫
         Window progressWindow = progress.getWindow();
-        progressWindow.setWindowAnimations(R.style.AnimDialogLoading);
+        progressWindow.setWindowAnimations(R.style.AnimDialog);
     }
 
     @Override
@@ -103,5 +112,31 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
     @Override
     public void showNeedNetwork() {
         Toast.makeText(getActivity(), "網路訊號不穩,請確認網路狀態", Toast.LENGTH_LONG).show();
+    }
+
+    private void resetPassword() {
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View view = inflater.inflate(R.layout.dialog_login_forgot_password, null);
+        final EditText mEdtDialogEmailForPassword = view.findViewById(R.id.edt_dialog_email_for_passwrod);
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle("重置密碼")
+                .setView(view)
+                .setNegativeButton("取消", null)
+                .setCancelable(true)
+                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String userEmail = mEdtDialogEmailForPassword.getText().toString();
+                        loginPresenter.doResetPassword(userEmail);
+                    }
+                })
+                .show();
+
+        alertDialog.getWindow().setWindowAnimations(R.style.AnimDialog);
+    }
+
+    @Override
+    public void showResetPasswordResult(String msg) {
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 }

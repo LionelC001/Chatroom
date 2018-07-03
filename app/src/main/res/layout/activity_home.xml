@@ -4,23 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_home"
+    android:background="@drawable/bg_home_wallpaper"
     android:orientation="vertical"
     tools:context=".home.HomeActivity">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout_home"
-        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        app:tabTextAppearance="@style/HomeTabTextStyle"
-        app:tabSelectedTextColor="@android:color/white"
-            app:tabTextColor="@android:color/white" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="120dp"
+        app:tabPaddingEnd="25dp"
+        app:tabPaddingStart="25dp"
+        app:tabTextAppearance="@style/HomeTabTextStyle" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </LinearLayout>

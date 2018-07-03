@@ -62,7 +62,6 @@ public class SignUpFragment extends Fragment implements ISignUpView, View.OnClic
     @Override
     public void onSignUpSuccess(String msg) {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
-        getActivity().finish();
     }
 
     @Override
@@ -86,7 +85,7 @@ public class SignUpFragment extends Fragment implements ISignUpView, View.OnClic
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        progress.getWindow().setWindowAnimations(R.style.AnimDialogLoading);
+        progress.getWindow().setWindowAnimations(R.style.AnimDialog);
     }
 
     @Override

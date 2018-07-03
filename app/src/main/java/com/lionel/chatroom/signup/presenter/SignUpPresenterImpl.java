@@ -28,7 +28,7 @@ public class SignUpPresenterImpl implements ISignUpPresenter {
             onSignUpFailure(msg);
         } else {
             if (isNetworkAvailable()) {
-                signUpModel.signUp(name, email, password);
+                signUpModel.signUp(name, email.trim(), password);
                 signUpView.onShowProgress();
             } else {
                 signUpView.showNeedNetwork();
