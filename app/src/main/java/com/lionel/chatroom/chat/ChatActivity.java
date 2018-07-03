@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -181,13 +182,13 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         progress.setCancelable(false);
         progress.show();
 
-        //對話框出現時,底下試圖不可操控
+        //對話框出現時,底下視圖不可操控
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         //實現對話框動畫
         Window progressWindow = progress.getWindow();
-        progressWindow.setWindowAnimations(R.style.dialogLoadingAnim);
+        progressWindow.setWindowAnimations(R.style.AnimDialogLoading);
     }
 
     @Override

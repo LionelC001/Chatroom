@@ -3,8 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorInput">#559be5</color>
+    <color name="colorChatInputBox">#559be5</color>
     <color name="colorRed">#a2ff5c67</color>
     <color name="colorDialogChangeName">#7f444d4d</color>
-    <color name="colorDialogProgress">#ff4c34</color>
+    <color name="colorDialogProgress">#fb604b</color>
+    <color name="colorLoginInputBox">#a2d6d6d1</color>
 </resources>

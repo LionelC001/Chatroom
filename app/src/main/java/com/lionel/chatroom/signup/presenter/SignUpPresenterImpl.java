@@ -1,9 +1,9 @@
 package com.lionel.chatroom.signup.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.Fragment;
 
 import com.lionel.chatroom.signup.model.ISignUpModel;
 import com.lionel.chatroom.signup.model.SignUpModel;
@@ -51,11 +51,11 @@ public class SignUpPresenterImpl implements ISignUpPresenter {
     @Override
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager) ((Activity) signUpView).getSystemService(Context.CONNECTIVITY_SERVICE);
+                = (ConnectivityManager) ((Fragment) signUpView).getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = null;
-        if(connectivityManager!=null) {
+        if (connectivityManager != null) {
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         }
-        return activeNetworkInfo!=null && activeNetworkInfo.isConnected();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

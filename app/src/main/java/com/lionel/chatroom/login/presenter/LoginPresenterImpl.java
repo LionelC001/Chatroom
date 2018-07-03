@@ -1,10 +1,9 @@
 package com.lionel.chatroom.login.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 
 import com.lionel.chatroom.login.model.ILoginModel;
 import com.lionel.chatroom.login.model.LoginModel;
@@ -50,7 +49,7 @@ public class LoginPresenterImpl implements ILoginPresenter {
     @Override
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager) ((Activity) loginView).getSystemService(Context.CONNECTIVITY_SERVICE);
+                = (ConnectivityManager) ((Fragment) loginView).getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = null;
         if (connectivityManager != null) {
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

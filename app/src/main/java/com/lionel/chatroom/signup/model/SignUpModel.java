@@ -1,7 +1,6 @@
 package com.lionel.chatroom.signup.model;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,21 +33,20 @@ public class SignUpModel implements ISignUpModel {
                         }
                     }
                 })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("<<<", "error: " + e.getMessage());
-                String msg = null;
-                switch(((FirebaseAuthException)e).getErrorCode()) {
-                    case "ERROR_EMAIL_ALREADY_IN_USE":
-                        msg = "此信箱已被使用過,請重新確認";
-                        break;
-                    default:
-                        msg = "資料格式有誤,請重新確認";
-                }
-                signUpPresenter.onSignUpFailure(msg);
-            }
-        });
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        String msg;
+                        switch (((FirebaseAuthException) e).getErrorCode()) {
+                            case "ERROR_EMAIL_ALREADY_IN_USE":
+                                msg = "此信箱已被使用過,請重新確認";
+                                break;
+                            default:
+                                msg = "資料格式有誤,請重新確認";
+                        }
+                        signUpPresenter.onSignUpFailure(msg);
+                    }
+                });
     }
 
     //儲存使用者資料
