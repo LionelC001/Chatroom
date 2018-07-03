@@ -146,7 +146,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     private void changeUserName() {
         View view = LayoutInflater.from(ChatActivity.this).inflate(R.layout.dialog_chatroom_change_name, null);
         final EditText mEdtDialogChangeName = view.findViewById(R.id.edt_dialog_change_name);
-        new AlertDialog.Builder(ChatActivity.this)
+        AlertDialog alertDialog = new AlertDialog.Builder(ChatActivity.this)
                 .setTitle("變更名稱")
                 .setView(view)
                 .setMessage("(最多12個字)")
@@ -159,6 +159,8 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                 .setNegativeButton("取消", null)
                 .setCancelable(true)
                 .show();
+
+        alertDialog.getWindow().setWindowAnimations(R.style.AnimDialog);
     }
 
     @Override
