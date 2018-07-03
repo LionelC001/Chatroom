@@ -1,5 +1,10 @@
 package com.lionel.chatroom.signup.presenter;
 
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.lionel.chatroom.signup.model.ISignUpModel;
 import com.lionel.chatroom.signup.model.SignUpModel;
 import com.lionel.chatroom.signup.view.ISignUpView;
@@ -22,17 +27,35 @@ public class SignUpPresenterImpl implements ISignUpPresenter {
             String msg = "密碼需至少六個字符以上";
             onSignUpFailure(msg);
         } else {
-            signUpModel.signUp(name, email, password);
+            if (isNetworkAvailable()) {
+                signUpModel.signUp(name, email, password);
+                signUpView.onShowProgress();
+            } else {
+                signUpView.showNeedNetwork();
+            }
         }
     }
 
     @Override
     public void onSignUpSuccess(String msg) {
         signUpView.onSignUpSuccess(msg);
+        signUpView.onHideProgress();
     }
 
     @Override
     public void onSignUpFailure(String msg) {
         signUpView.onSignUpFailure(msg);
+        signUpView.onHideProgress();
+    }
+
+    @Override
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) ((Activity) signUpView).getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = null;
+        if(connectivityManager!=null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return activeNetworkInfo!=null && activeNetworkInfo.isConnected();
     }
 }

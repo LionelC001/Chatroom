@@ -47,22 +47,6 @@ public class ChatModel implements IChatModel {
     }
 
     @Override
-    public void changeUserName(final String newName) {
-        userName = newName;
-        FirebaseDatabase.getInstance()
-                .getReference("user")
-                .child(userEmail.replace(".", ""))
-                .child("name")
-                .setValue(newName)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        chatPresenter.onChangeUserNameSuccess();
-                    }
-                });
-    }
-
-    @Override
     public void needAdapterOptions() {
         //  查詢FirebaseDatabase裡的聊天紀錄
         Query query = FirebaseDatabase.getInstance()
@@ -85,6 +69,22 @@ public class ChatModel implements IChatModel {
     @Override
     public FirebaseRecyclerOptions getAdapterOptions() {
         return options;
+    }
+
+    @Override
+    public void changeUserName(final String newName) {
+        userName = newName;
+        FirebaseDatabase.getInstance()
+                .getReference("user")
+                .child(userEmail.replace(".", ""))
+                .child("name")
+                .setValue(newName)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        chatPresenter.onChangeUserNameSuccess();
+                    }
+                });
     }
 
     @Override

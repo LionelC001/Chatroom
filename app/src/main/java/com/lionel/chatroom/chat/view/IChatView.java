@@ -22,4 +22,12 @@ public interface IChatView {
 
     // 登出成功
     void onLogoutSuccess();
+
+    //顯示進度畫面
+    void showProgress();
+    //關閉進度畫面
+    void hideProgress();
+
+    //提示需要網路連線
+    void showNeedNetwork();
 }

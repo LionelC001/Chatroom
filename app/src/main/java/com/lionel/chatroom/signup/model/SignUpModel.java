@@ -1,11 +1,14 @@
 package com.lionel.chatroom.signup.model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lionel.chatroom.signup.presenter.ISignUpPresenter;
 
@@ -28,12 +31,24 @@ public class SignUpModel implements ISignUpModel {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             saveUserData(name, email);
-                        } else {
-                            String msg = "資料有誤,請重新確認";
-                            signUpPresenter.onSignUpFailure(msg);
                         }
                     }
-                });
+                })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("<<<", "error: " + e.getMessage());
+                String msg = null;
+                switch(((FirebaseAuthException)e).getErrorCode()) {
+                    case "ERROR_EMAIL_ALREADY_IN_USE":
+                        msg = "此信箱已被使用過,請重新確認";
+                        break;
+                    default:
+                        msg = "資料格式有誤,請重新確認";
+                }
+                signUpPresenter.onSignUpFailure(msg);
+            }
+        });
     }
 
     //儲存使用者資料
@@ -41,7 +56,7 @@ public class SignUpModel implements ISignUpModel {
     public void saveUserData(String name, String email) {
         FirebaseDatabase.getInstance()
                 .getReference("user")
-                .child(email.replace(".",""))
+                .child(email.replace(".", ""))
                 .setValue(new UserDataModel(name, email))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

@@ -6,4 +6,5 @@
     <color name="colorInput">#559be5</color>
     <color name="colorRed">#a2ff5c67</color>
     <color name="colorDialogChangeName">#7f444d4d</color>
+    <color name="colorDialogProgress">#ff4c34</color>
 </resources>

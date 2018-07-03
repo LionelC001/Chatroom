@@ -29,6 +29,10 @@ public interface IChatPresenter {
 
     //請求登出
     void logout();
+
     //登出成功
     void onLogoutSuccess();
+
+    //確認是否有網路連線
+    boolean isNetworkAvailable();
 }

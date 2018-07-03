@@ -1,6 +1,7 @@
 package com.lionel.chatroom.chat;
 
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +33,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     private RecyclerAdapter adapter;
     private MyAdapterDataObserver adapterDataObserver;
     private TextView mTxtDate;
+    private AlertDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,5 +167,39 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     public void onLogoutSuccess() {
         Toast.makeText(this, "已成功登出", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    public void showProgress() {
+        AlertDialog.Builder adBuilder = new AlertDialog.Builder(ChatActivity.this);
+        progress = adBuilder.create();
+        View view = LayoutInflater.from(ChatActivity.this).inflate(R.layout.dialog_loading_progress, null);
+        ((TextView) view.findViewById(R.id.txt_progress_title)).setText("讀取中");
+        ((TextView) view.findViewById(R.id.txt_progress_message)).setText("請稍後...");
+        ((ProgressBar) view.findViewById(R.id.progress_bar)).getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorDialogProgress), PorterDuff.Mode.MULTIPLY);
+        progress.setView(view);
+        progress.setCancelable(false);
+        progress.show();
+
+        //對話框出現時,底下試圖不可操控
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+        //實現對話框動畫
+        Window progressWindow = progress.getWindow();
+        progressWindow.setWindowAnimations(R.style.dialogLoadingAnim);
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progress != null) {
+            progress.dismiss();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+    }
+
+    @Override
+    public void showNeedNetwork() {
+        Toast.makeText(this, "網路訊號不穩,請確認網路狀態", Toast.LENGTH_LONG).show();
     }
 }

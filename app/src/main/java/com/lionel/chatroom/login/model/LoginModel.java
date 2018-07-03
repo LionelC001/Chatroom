@@ -26,7 +26,7 @@ public class LoginModel implements ILoginModel {
                         String msg;
                         if (task.isSuccessful()) {
                             msg = "已成功登入";
-                            loginPresenter.onSuccess(msg, mAuth.getCurrentUser().getEmail());
+                            loginPresenter.onSuccess(msg);
                         } else {
                             msg = "請確認您的帳號與密碼是否正確";
                             loginPresenter.onFailure(msg);
