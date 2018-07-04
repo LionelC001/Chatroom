@@ -30,4 +30,7 @@ public interface IChatView {
 
     //提示需要網路連線
     void showNeedNetwork();
+
+    //顯示離開提示
+    void showQuitMessage();
 }

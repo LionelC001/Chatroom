@@ -45,8 +45,8 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     }
 
     private void initView() {
-        mEdtMsg = findViewById(R.id.edtMsg);
-        mRecyclerViewChat = findViewById(R.id.recyclerViewChat);
+        mEdtMsg = findViewById(R.id.edt_chat_msg);
+        mRecyclerViewChat = findViewById(R.id.recycler_view_chat);
         mTxtDate = findViewById(R.id.txt_date);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         needRecyclerAdapter();
@@ -93,10 +93,10 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                 changeUserName();
                 break;
             case R.id.menu_chatview_log_out:
-                chatPresenter.logout();
+                showLogoutMessage();
                 break;
             case android.R.id.home:
-                finish();
+               chatPresenter.quitChatRoom();
                 break;
         }
         return true;
@@ -206,5 +206,45 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     @Override
     public void showNeedNetwork() {
         Toast.makeText(this, "網路訊號不穩,請確認網路狀態", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+       chatPresenter.quitChatRoom();
+    }
+
+    @Override
+    public void showQuitMessage() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("離開")
+                .setMessage("確定要離開聊天室嗎?")
+                .setCancelable(true)
+                .setNegativeButton("取消",null)
+                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
+
+        dialog.getWindow().setWindowAnimations(R.style.AnimDialog);
+    }
+
+    private void showLogoutMessage() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("登出")
+                .setMessage("確定要登出聊天室嗎?")
+                .setCancelable(true)
+                .setNegativeButton("取消",null)
+                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        chatPresenter.logout();
+                    }
+                })
+                .show();
+
+        dialog.getWindow().setWindowAnimations(R.style.AnimDialog);
     }
 }

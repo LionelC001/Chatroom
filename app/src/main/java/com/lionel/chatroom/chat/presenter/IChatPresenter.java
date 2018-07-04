@@ -35,4 +35,7 @@ public interface IChatPresenter {
 
     //確認是否有網路連線
     boolean isNetworkAvailable();
+
+    //準備離開聊天室頁面
+    void quitChatRoom();
 }

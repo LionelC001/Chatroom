@@ -38,6 +38,7 @@ public class LoginPresenterImpl implements ILoginPresenter {
     public void onLoginSuccess(String msg) {
         loginView.onLoginSuccess(msg);
         loginView.onHideProgress();
+        loginView.saveUserAccountToSP();
     }
 
     @Override
@@ -90,12 +91,12 @@ public class LoginPresenterImpl implements ILoginPresenter {
     }
 
     @Override
-    public String getUserAccount() {
+    public String[] getUserAccount() {
         return loginModelManager.getUserAccount();
     }
 
     @Override
-    public void setUserAccount(String email) {
-        loginModelManager.setUserAccount(email);
+    public void setUserAccount(String email, String password) {
+        loginModelManager.setUserAccount(email, password);
     }
 }

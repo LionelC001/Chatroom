@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:buttonTint="@android:color/white"
-        android:text="記住我的帳號"
+        android:text="記住我"
         android:textColor="@android:color/white"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,6 +92,4 @@
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
-
-
 </android.support.constraint.ConstraintLayout>

@@ -96,4 +96,9 @@ public class ChatPresenterImpl implements IChatPresenter {
         }
         return activeNetworkInfo!=null && activeNetworkInfo.isConnected();
     }
+
+    @Override
+    public void quitChatRoom() {
+        chatView.showQuitMessage();
+    }
 }

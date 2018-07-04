@@ -25,12 +25,15 @@ public class LoginModelPreferences implements ILoginModelPreferences {
     }
 
     @Override
-    public String getUserAccount() {
-        return mSp.getString("user_account", "");
+    public String[] getUserAccount() {
+        return new String[]{
+                mSp.getString("user_email", ""),
+                mSp.getString("user_password", "")};
     }
 
     @Override
-    public void setUserAccount(String email) {
-        mSp.edit().putString("user_account", email).apply();
+    public void setUserAccount(String email, String password) {
+        mSp.edit().putString("user_email", email).apply();
+        mSp.edit().putString("user_password", password).apply();
     }
 }

@@ -55,12 +55,12 @@ public class LoginModelManager implements ILoginModelManager {
     }
 
     @Override
-    public String getUserAccount() {
+    public String[] getUserAccount() {
         return loginModelPreferences.getUserAccount();
     }
 
     @Override
-    public void setUserAccount(String email) {
-        loginModelPreferences.setUserAccount(email);
+    public void setUserAccount(String email, String password) {
+        loginModelPreferences.setUserAccount(email, password);
     }
 }

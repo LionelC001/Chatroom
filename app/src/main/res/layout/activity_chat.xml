@@ -7,7 +7,7 @@
     tools:context=".chat.ChatActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewChat"
+        android:id="@+id/recycler_view_chat"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/btnSend"
+            android:id="@+id/btn_chat_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -39,12 +39,12 @@
             android:src="@drawable/ic_send_black" />
 
         <EditText
-            android:id="@+id/edtMsg"
+            android:id="@+id/edt_chat_msg"
             style="@style/ChatTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/btnSend"
+            android:layout_toStartOf="@+id/btn_chat_send"
             android:background="@drawable/bg_chat_input_box"
             android:ems="20"
             android:hint="請輸入訊息"

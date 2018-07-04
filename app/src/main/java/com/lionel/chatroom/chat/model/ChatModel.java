@@ -15,6 +15,8 @@ import com.lionel.chatroom.chat.listener.FirebaseDatabaseListener;
 import com.lionel.chatroom.chat.presenter.IChatPresenter;
 import com.lionel.chatroom.signup.model.UserDataModel;
 
+import java.util.List;
+
 public class ChatModel implements IChatModel {
     private IChatPresenter chatPresenter;
     private String userName, userEmail;
@@ -106,4 +108,5 @@ public class ChatModel implements IChatModel {
         FirebaseAuth.getInstance().signOut();
         chatPresenter.onLogoutSuccess();
     }
+
 }

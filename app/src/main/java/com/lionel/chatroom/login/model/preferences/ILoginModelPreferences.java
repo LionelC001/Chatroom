@@ -5,7 +5,7 @@ public interface ILoginModelPreferences {
 
     boolean checkIsRememberUser();
 
-    String getUserAccount();
+    String[] getUserAccount();
 
-    void setUserAccount(String email);
+    void setUserAccount(String email, String password);
 }

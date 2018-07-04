@@ -14,4 +14,7 @@ public interface ILoginView {
 
     //提示重置密碼信已發出
     void showResetPasswordResult(String msg);
+
+    //如使用者需要,將帳號存入SharedPreferences
+    void saveUserAccountToSP();
 }

@@ -34,6 +34,7 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
     private TextInputEditText mEdtEmail, mEdtPassword;
     private AlertDialog progress;
     private CheckBox mChkLoginKeepAccount;
+    private boolean bChkLoginKeepAccount;
 
     public LoginFragment() {
 
@@ -69,7 +70,8 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
         // 若有勾選過記住帳號, checkbox自動打勾, 自動填上使用者信箱, 輸入游標預設在密碼輸入欄
         if (loginPresenter.checkIsRememberUser()) {
             mChkLoginKeepAccount.setChecked(true);
-            mEdtEmail.setText(loginPresenter.getUserAccount());
+            mEdtEmail.setText(loginPresenter.getUserAccount()[0]);
+            mEdtPassword.setText(loginPresenter.getUserAccount()[1]);
             mEdtPassword.requestFocus();
         }
     }
@@ -98,13 +100,20 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.getId() == R.id.chk_login_keep_account) {
-            if (isChecked) {
-                if (!mEdtEmail.getText().toString().equals("")) {
-                    loginPresenter.setUserAccount(mEdtEmail.getText().toString().trim());
-                }
-            }
-            loginPresenter.saveIsRememberUser(isChecked);
+            bChkLoginKeepAccount = isChecked;
         }
+    }
+
+    @Override
+    public void saveUserAccountToSP() {
+        if (bChkLoginKeepAccount) {
+            if (!mEdtEmail.getText().toString().equals("")) {
+                loginPresenter.setUserAccount(
+                        mEdtEmail.getText().toString().trim(),
+                        mEdtPassword.getText().toString().trim());
+            }
+        }
+        loginPresenter.saveIsRememberUser(bChkLoginKeepAccount);
     }
 
     @Override

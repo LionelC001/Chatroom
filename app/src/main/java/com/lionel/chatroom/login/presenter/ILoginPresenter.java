@@ -26,8 +26,8 @@ public interface ILoginPresenter {
     boolean checkIsRememberUser();
 
     //取得使用者帳號
-    String getUserAccount();
+    String[] getUserAccount();
 
     //將使用者帳號存起來
-    void setUserAccount(String email);
+    void setUserAccount(String email, String password);
 }
