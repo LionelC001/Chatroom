@@ -1,4 +1,4 @@
-package com.lionel.chatroom.login.model;
+package com.lionel.chatroom.login.model.firebaseauth;
 
 import android.support.annotation.NonNull;
 
@@ -8,14 +8,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.lionel.chatroom.login.presenter.ILoginPresenter;
+import com.lionel.chatroom.login.model.ILoginModelManager;
 
-public class LoginModel implements ILoginModel {
-    private final ILoginPresenter loginPresenter;
+public class LoginModelFirebaseAuth implements ILoginModelFirebaseAuth {
+    private final ILoginModelManager loginModelManager;
     private final FirebaseAuth mAuth;
 
-    public LoginModel(ILoginPresenter presenter) {
-        this.loginPresenter = presenter;
+    public LoginModelFirebaseAuth(ILoginModelManager modelManager) {
+        loginModelManager = modelManager;
         mAuth = FirebaseAuth.getInstance();
     }
 
@@ -28,10 +28,10 @@ public class LoginModel implements ILoginModel {
                         String msg;
                         if (task.isSuccessful()) {
                             msg = "已成功登入";
-                            loginPresenter.onLoginSuccess(msg);
+                            loginModelManager.onLoginSuccess(msg);
                         } else {
                             msg = "請確認您的帳號與密碼是否正確";
-                            loginPresenter.onLoginFailure(msg);
+                            loginModelManager.onLoginFailure(msg);
                         }
                     }
                 });
@@ -39,7 +39,6 @@ public class LoginModel implements ILoginModel {
 
     @Override
     public void resetPassword(String email) {
-
         FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -47,7 +46,7 @@ public class LoginModel implements ILoginModel {
                         if (task.isSuccessful()) {
                             String msg;
                             msg = "密碼重置信已發到您的電子信箱,請確認";
-                            loginPresenter.onResetPasswordResult(msg);
+                            loginModelManager.onResetPasswordResult(msg);
                         }
                     }
                 })
@@ -66,7 +65,7 @@ public class LoginModel implements ILoginModel {
                                 msg = "重置流程錯誤,請洽技術人員 ";
                                 break;
                         }
-                        loginPresenter.onResetPasswordResult(msg);
+                        loginModelManager.onResetPasswordResult(msg);
                     }
                 });
     }

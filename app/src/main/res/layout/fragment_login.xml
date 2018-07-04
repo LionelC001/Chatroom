@@ -67,7 +67,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <CheckBox
-        android:id="@+id/chk_login_remember"
+        android:id="@+id/chk_login_keep_account"
         style="@style/ChatTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

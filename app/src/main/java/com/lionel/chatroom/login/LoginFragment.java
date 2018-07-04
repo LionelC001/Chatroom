@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,13 +29,14 @@ import com.lionel.chatroom.login.presenter.LoginPresenterImpl;
 import com.lionel.chatroom.login.view.ILoginView;
 
 
-public class LoginFragment extends Fragment implements ILoginView, View.OnClickListener {
+public class LoginFragment extends Fragment implements ILoginView, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private ILoginPresenter loginPresenter;
     private TextInputEditText mEdtEmail, mEdtPassword;
     private AlertDialog progress;
+    private CheckBox mChkLoginKeepAccount;
 
     public LoginFragment() {
-        loginPresenter = new LoginPresenterImpl(this);
+
     }
 
 
@@ -46,12 +49,36 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        loginPresenter = new LoginPresenterImpl(getActivity(), this);
+
         mEdtEmail = getView().findViewById(R.id.edt_login_email);
         mEdtPassword = getView().findViewById(R.id.edt_login_password);
         Button mBtnLogin = getView().findViewById(R.id.btn_login);
-        mBtnLogin.setOnClickListener(this);
         TextView mTxtLoginForgotPw = getView().findViewById(R.id.txt_login_forgot_pw);
+        mChkLoginKeepAccount = getView().findViewById(R.id.chk_login_keep_account);
+
+        mBtnLogin.setOnClickListener(this);
         mTxtLoginForgotPw.setOnClickListener(this);
+        mChkLoginKeepAccount.setOnCheckedChangeListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mEdtEmail.requestFocus();
+        // 若有勾選過記住帳號, checkbox自動打勾, 自動填上使用者信箱, 輸入游標預設在密碼輸入欄
+        if (loginPresenter.checkIsRememberUser()) {
+            mChkLoginKeepAccount.setChecked(true);
+            mEdtEmail.setText(loginPresenter.getUserAccount());
+            mEdtPassword.requestFocus();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mEdtEmail.setText("");
+        mEdtPassword.setText("");
     }
 
     @Override
@@ -64,6 +91,19 @@ public class LoginFragment extends Fragment implements ILoginView, View.OnClickL
             case R.id.txt_login_forgot_pw:
                 resetPassword();
                 break;
+        }
+    }
+
+    //記住使用者帳號功能
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (buttonView.getId() == R.id.chk_login_keep_account) {
+            if (isChecked) {
+                if (!mEdtEmail.getText().toString().equals("")) {
+                    loginPresenter.setUserAccount(mEdtEmail.getText().toString().trim());
+                }
+            }
+            loginPresenter.saveIsRememberUser(isChecked);
         }
     }
 

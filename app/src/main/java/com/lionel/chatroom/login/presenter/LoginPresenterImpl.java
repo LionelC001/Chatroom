@@ -5,17 +5,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.Fragment;
 
-import com.lionel.chatroom.login.model.ILoginModel;
-import com.lionel.chatroom.login.model.LoginModel;
+import com.lionel.chatroom.login.model.ILoginModelManager;
+import com.lionel.chatroom.login.model.LoginModelManager;
 import com.lionel.chatroom.login.view.ILoginView;
 
 public class LoginPresenterImpl implements ILoginPresenter {
     private ILoginView loginView;
-    private ILoginModel loginModel;
+    private ILoginModelManager loginModelManager;
 
-    public LoginPresenterImpl(ILoginView view) {
+    public LoginPresenterImpl(Context context, ILoginView view) {
         this.loginView = view;
-        this.loginModel = new LoginModel(this);
+        this.loginModelManager = new LoginModelManager(context,this);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class LoginPresenterImpl implements ILoginPresenter {
             if (isNetworkAvailable()) {
                 String title = "登入中";
                 loginView.onShowProgress(title);
-                loginModel.login(email.trim(), password);
+                loginModelManager.login(email.trim(), password);
             } else {
                 loginView.showNeedNetwork();
             }
@@ -66,7 +66,7 @@ public class LoginPresenterImpl implements ILoginPresenter {
             if (isNetworkAvailable()) {
                 String title = "讀取中";
                 loginView.onShowProgress(title);
-                loginModel.resetPassword(email.trim());
+                loginModelManager.resetPassword(email.trim());
             } else {
                 loginView.showNeedNetwork();
             }
@@ -77,5 +77,25 @@ public class LoginPresenterImpl implements ILoginPresenter {
     public void onResetPasswordResult(String msg) {
         loginView.showResetPasswordResult(msg);
         loginView.onHideProgress();
+    }
+
+    @Override
+    public void saveIsRememberUser(boolean isRemember) {
+        loginModelManager.saveIsRememberUser(isRemember);
+    }
+
+    @Override
+    public boolean checkIsRememberUser() {
+        return loginModelManager.checkIsRememberUser();
+    }
+
+    @Override
+    public String getUserAccount() {
+        return loginModelManager.getUserAccount();
+    }
+
+    @Override
+    public void setUserAccount(String email) {
+        loginModelManager.setUserAccount(email);
     }
 }
