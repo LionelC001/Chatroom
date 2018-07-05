@@ -31,8 +31,13 @@
         <item name="android:windowExitAnimation">@anim/anim_dialog_out</item>
     </style>
 
-    <style name="HomeTheme" parent="AppTheme">
+    <style name="NoToolbarTheme" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="ToolbarPopTheme" >
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 </resources>

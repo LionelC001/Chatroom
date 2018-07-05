@@ -1,6 +1,7 @@
 package com.lionel.chatroom.chat.view;
 
-import com.lionel.chatroom.chat.adapter.RecyclerAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.SimpleAdapter;
 
 public interface IChatView {
     //通知presenter需要一個Adapter, presenter會開始準備工作
@@ -33,4 +34,7 @@ public interface IChatView {
 
     //顯示離開提示
     void showQuitMessage();
+
+    //顯示線上成員
+    void showOnlineUser(SimpleAdapter adapter);
 }

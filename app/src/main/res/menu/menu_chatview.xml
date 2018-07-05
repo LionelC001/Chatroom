@@ -10,4 +10,10 @@
         android:id="@+id/menu_chatview_log_out"
         android:title="登出"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_show_online_user"
+        android:icon="@drawable/ic_chat_online_user_people"
+        android:title="Show Online User"
+        app:showAsAction="always" />
 </menu>

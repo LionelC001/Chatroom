@@ -4,16 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.SimpleAdapter;
 
-import com.lionel.chatroom.chat.adapter.RecyclerAdapter;
+import com.lionel.chatroom.R;
+import com.lionel.chatroom.chat.adapter.ChatRecyclerAdapter;
 import com.lionel.chatroom.chat.model.ChatModel;
 import com.lionel.chatroom.chat.model.IChatModel;
 import com.lionel.chatroom.chat.view.IChatView;
 
+import java.util.List;
+import java.util.Map;
+
 public class ChatPresenterImpl implements IChatPresenter {
     private IChatView chatView;
     private IChatModel chatModel;
-    private RecyclerAdapter adapter;
+    private ChatRecyclerAdapter adapter;
 
     public ChatPresenterImpl(IChatView view) {
         chatView = view;
@@ -26,6 +31,9 @@ public class ChatPresenterImpl implements IChatPresenter {
             chatModel.needUserData();
             chatModel.needAdapterOptions();
             chatView.showProgress();
+
+            //使用者登入成功,更新成上線狀態
+            chatModel.updateOnlineUserState(true);
         } else {
             chatView.showNeedNetwork();
         }
@@ -38,8 +46,8 @@ public class ChatPresenterImpl implements IChatPresenter {
     }
 
     @Override
-    public RecyclerAdapter getAdapter() {
-        adapter = new RecyclerAdapter(chatModel.getAdapterOptions(), chatModel.getUserEmail());
+    public ChatRecyclerAdapter getAdapter() {
+        adapter = new ChatRecyclerAdapter(chatModel.getAdapterOptions(), chatModel.getUserEmail());
         return adapter;
     }
 
@@ -83,6 +91,8 @@ public class ChatPresenterImpl implements IChatPresenter {
     @Override
     public void onLogoutSuccess() {
         chatView.onLogoutSuccess();
+        //使用者登出成功,更新成下線狀態
+        chatModel.updateOnlineUserState(false);
     }
 
     @Override
@@ -90,15 +100,35 @@ public class ChatPresenterImpl implements IChatPresenter {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) ((Activity) chatView).getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo activeNetworkInfo = null ;
-        if (connectivityManager!= null) {
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         }
-        return activeNetworkInfo!=null && activeNetworkInfo.isConnected();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
     public void quitChatRoom() {
         chatView.showQuitMessage();
+
+        //使用者離開聊天室,更新成下線狀態
+        chatModel.updateOnlineUserState(false);
+    }
+
+    @Override
+    public void needOnlineUserList() {
+        chatModel.needOnlineUserList();
+    }
+
+    @Override
+    public void onOnlineUserListResult(List<Map<String, Object>> userList) {
+        SimpleAdapter adapter = new SimpleAdapter(
+                (Activity) chatView,
+                userList,
+                R.layout.item_chat_online_user,
+                new String[]{"img_online_user", "txt_online_user"},
+                new int[]{R.id.img_online_user, R.id.txt_online_user});
+
+        chatView.showOnlineUser(adapter);
     }
 }

@@ -9,13 +9,19 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.lionel.chatroom.R;
 import com.lionel.chatroom.chat.listener.FirebaseDatabaseListener;
 import com.lionel.chatroom.chat.presenter.IChatPresenter;
 import com.lionel.chatroom.signup.model.UserDataModel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatModel implements IChatModel {
     private IChatPresenter chatPresenter;
@@ -109,4 +115,44 @@ public class ChatModel implements IChatModel {
         chatPresenter.onLogoutSuccess();
     }
 
+    @Override
+    public void needOnlineUserList() {
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child("user")
+                .orderByChild("isOnline")
+                .equalTo(true)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<Map<String, Object>> listOnlineUser = new ArrayList<>();
+                        for (DataSnapshot element : dataSnapshot.getChildren()) {
+                            UserDataModel user = element.getValue(UserDataModel.class);
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("img_online_user", R.drawable.ic_chat_online_user_person);
+                            map.put("txt_online_user", user.getName());
+                            listOnlineUser.add(map);
+                        }
+                        chatPresenter.onOnlineUserListResult(listOnlineUser);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+    }
+
+    @Override
+    public void updateOnlineUserState(final Boolean is) {
+        FirebaseDatabase.getInstance()
+                .getReference("user")
+                .child(userEmail.replace(".", ""))
+                .child("isOnline")
+                .setValue(is)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                    }
+                });
+    }
 }

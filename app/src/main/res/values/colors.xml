@@ -8,4 +8,5 @@
     <color name="colorDialogChangeName">#7f444d4d</color>
     <color name="colorDialogProgress">#fb604b</color>
     <color name="colorLoginInputBox">#d8d6d6d1</color>
+    <color name="colorDialogOnlineUser">#caffffff</color>
 </resources>

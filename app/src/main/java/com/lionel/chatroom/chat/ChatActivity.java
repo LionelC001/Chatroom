@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,23 +15,26 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lionel.chatroom.R;
-import com.lionel.chatroom.chat.adapter.RecyclerAdapter;
+import com.lionel.chatroom.chat.adapter.ChatRecyclerAdapter;
 import com.lionel.chatroom.chat.listener.MyAdapterDataObserver;
 import com.lionel.chatroom.chat.listener.RecyclerViewScrollListener;
 import com.lionel.chatroom.chat.presenter.ChatPresenterImpl;
 import com.lionel.chatroom.chat.presenter.IChatPresenter;
+import com.lionel.chatroom.chat.view.ChatOnlineUserDialog;
 import com.lionel.chatroom.chat.view.IChatView;
 
 public class ChatActivity extends AppCompatActivity implements IChatView {
     private IChatPresenter chatPresenter;
     private EditText mEdtMsg;
     private RecyclerView mRecyclerViewChat;
-    private RecyclerAdapter adapter;
+    private ChatRecyclerAdapter adapter;
     private MyAdapterDataObserver adapterDataObserver;
     private TextView mTxtDate;
     private AlertDialog progress;
@@ -48,7 +52,12 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         mEdtMsg = findViewById(R.id.edt_chat_msg);
         mRecyclerViewChat = findViewById(R.id.recycler_view_chat);
         mTxtDate = findViewById(R.id.txt_date);
+
+        Toolbar toolbar = findViewById(R.id.toolbar_chat);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         needRecyclerAdapter();
     }
 
@@ -80,6 +89,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         adapter.registerAdapterDataObserver(adapterDataObserver);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_chatview, menu);
@@ -96,7 +106,10 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                 showLogoutMessage();
                 break;
             case android.R.id.home:
-               chatPresenter.quitChatRoom();
+                chatPresenter.quitChatRoom();
+                break;
+            case R.id.menu_show_online_user:
+                chatPresenter.needOnlineUserList();
                 break;
         }
         return true;
@@ -118,6 +131,13 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
             adapter.stopListening();
             adapter.unregisterAdapterDataObserver(adapterDataObserver);
         }
+    }
+
+    @Override
+    public void showOnlineUser(SimpleAdapter adapter) {
+        ChatOnlineUserDialog dialog = new ChatOnlineUserDialog(this);
+        ((ListView) dialog.findViewById(R.id.listOnlineUser)).setAdapter(adapter);
+        dialog.show();
     }
 
     @Override
@@ -210,7 +230,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
 
     @Override
     public void onBackPressed() {
-       chatPresenter.quitChatRoom();
+        chatPresenter.quitChatRoom();
     }
 
     @Override
@@ -219,7 +239,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                 .setTitle("離開")
                 .setMessage("確定要離開聊天室嗎?")
                 .setCancelable(true)
-                .setNegativeButton("取消",null)
+                .setNegativeButton("取消", null)
                 .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -236,7 +256,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                 .setTitle("登出")
                 .setMessage("確定要登出聊天室嗎?")
                 .setCancelable(true)
-                .setNegativeButton("取消",null)
+                .setNegativeButton("取消", null)
                 .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

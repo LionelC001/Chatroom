@@ -2,8 +2,6 @@ package com.lionel.chatroom.chat.model;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
-import java.util.List;
-
 public interface IChatModel {
     //從Firebase Database 取得使用者帳號與名稱
     void needUserData();
@@ -26,9 +24,9 @@ public interface IChatModel {
     //登出帳號
     void logout();
 
-   /* //更新正在線上的使用者狀態
-    void updateOnlineUser();
+    //取得正在線上的成員名字
+    void needOnlineUserList();
 
-    //取得正在線上的使用者名字
-    List<String> getOnlineUser();*/
+    //更新成員是否在線上
+    void updateOnlineUserState(Boolean isOnline);
 }

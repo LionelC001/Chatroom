@@ -9,9 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".chat.ChatActivity" />
-        <activity android:name=".home.HomeActivity"
-            android:theme="@style/HomeTheme">
+        <activity
+            android:name=".chat.ChatActivity"
+            android:theme="@style/NoToolbarTheme" />
+        <activity
+            android:name=".home.HomeActivity"
+            android:theme="@style/NoToolbarTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

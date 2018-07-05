@@ -71,13 +71,13 @@ public class SignUpFragment extends Fragment implements ISignUpView, View.OnClic
 
     @Override
     public void onShowProgress() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        progress = builder.create();
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.dialog_loading_progress, null);
         ((TextView) view.findViewById(R.id.txt_progress_title)).setText("註冊中...");
         ((TextView) view.findViewById(R.id.txt_progress_message)).setText("請稍後...");
         ((ProgressBar) view.findViewById(R.id.progress_bar)).getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorDialogProgress), PorterDuff.Mode.MULTIPLY);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        progress = builder.create();
         progress.setView(view);
         progress.setCancelable(false);
         progress.show();

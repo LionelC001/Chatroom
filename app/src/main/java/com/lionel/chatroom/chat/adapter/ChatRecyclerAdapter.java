@@ -17,13 +17,13 @@ import com.lionel.chatroom.chat.model.ChatMessage;
 import java.util.Arrays;
 import java.util.List;
 
-public class RecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, RecyclerAdapter.ViewHolder>
-        implements IRecyclerAdapter {
+public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, ChatRecyclerAdapter.ViewHolder>
+        implements IChatRecyclerAdapter {
     private String userEmail;
     private String date;
     private List<String> dateList;  //用來記錄出現過的訊息日期
 
-    public RecyclerAdapter(@NonNull FirebaseRecyclerOptions<ChatMessage> options, String email) {
+    public ChatRecyclerAdapter(@NonNull FirebaseRecyclerOptions<ChatMessage> options, String email) {
         super(options);
         userEmail = email;
         dateList = Arrays.asList(new String[100]);

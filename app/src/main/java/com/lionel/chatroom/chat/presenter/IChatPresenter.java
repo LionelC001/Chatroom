@@ -1,6 +1,9 @@
 package com.lionel.chatroom.chat.presenter;
 
-import com.lionel.chatroom.chat.adapter.RecyclerAdapter;
+import com.lionel.chatroom.chat.adapter.ChatRecyclerAdapter;
+
+import java.util.List;
+import java.util.Map;
 
 public interface IChatPresenter {
     //通知Model發送訊息
@@ -16,7 +19,7 @@ public interface IChatPresenter {
     void onAdapterParamsInitDone();
 
     //回傳FirebaseRecyclerAdapter物件
-    RecyclerAdapter getAdapter();
+    ChatRecyclerAdapter getAdapter();
 
     //向Adapter取得發送訊息時的日期,並回傳
     String fetchMessageDate();
@@ -38,4 +41,10 @@ public interface IChatPresenter {
 
     //準備離開聊天室頁面
     void quitChatRoom();
+
+    //準備顯示正在線上的成員
+    void needOnlineUserList();
+
+    //回傳製作好的Adapter
+    void onOnlineUserListResult(List<Map<String, Object>> userList);
 }
