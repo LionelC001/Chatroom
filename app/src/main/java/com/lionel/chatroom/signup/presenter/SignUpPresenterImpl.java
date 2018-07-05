@@ -9,6 +9,8 @@ import com.lionel.chatroom.signup.model.ISignUpModel;
 import com.lionel.chatroom.signup.model.SignUpModel;
 import com.lionel.chatroom.signup.view.ISignUpView;
 
+import java.util.Random;
+
 public class SignUpPresenterImpl implements ISignUpPresenter {
     private ISignUpView signUpView;
     private ISignUpModel signUpModel;
@@ -28,7 +30,8 @@ public class SignUpPresenterImpl implements ISignUpPresenter {
             onSignUpFailure(msg);
         } else {
             if (isNetworkAvailable()) {
-                signUpModel.signUp(name, email.trim(), password);
+                int colorIndex = (int)(Math.random()*10);
+                signUpModel.signUp(name, email.trim(), password, colorIndex);
                 signUpView.onShowProgress();
             } else {
                 signUpView.showNeedNetwork();

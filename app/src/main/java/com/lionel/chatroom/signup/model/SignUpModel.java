@@ -23,13 +23,13 @@ public class SignUpModel implements ISignUpModel {
 
     // 註冊成功後, 開始儲存使用者資料至Firebase Database
     @Override
-    public void signUp(final String name, final String email, String password) {
+    public void signUp(final String name, final String email, String password, final int colorIndex) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            saveUserData(name, email);
+                            saveUserData(name, email, colorIndex);
                         }
                     }
                 })
@@ -51,11 +51,11 @@ public class SignUpModel implements ISignUpModel {
 
     //儲存使用者資料
     @Override
-    public void saveUserData(String name, String email) {
+    public void saveUserData(String name, String email, int colorIndex) {
         FirebaseDatabase.getInstance()
                 .getReference("user")
                 .child(email.replace(".", ""))
-                .setValue(new UserDataModel(name, email))
+                .setValue(new UserDataModel(name, email, colorIndex))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

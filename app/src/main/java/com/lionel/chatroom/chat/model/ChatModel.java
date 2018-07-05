@@ -27,6 +27,7 @@ public class ChatModel implements IChatModel {
     private IChatPresenter chatPresenter;
     private String userName, userEmail;
     private FirebaseRecyclerOptions<ChatMessage> options;
+    private int uesrColor;
 
     public ChatModel(IChatPresenter presenter) {
         chatPresenter = presenter;
@@ -48,6 +49,7 @@ public class ChatModel implements IChatModel {
                         UserDataModel user = dataSnapshot.getValue(UserDataModel.class);
                         if (user != null) {
                             userName = user.getName();
+                            uesrColor = user.getColorIndex();
                             chatPresenter.onAdapterParamsInitDone();
                         }
                     }
@@ -100,7 +102,7 @@ public class ChatModel implements IChatModel {
         FirebaseDatabase.getInstance()
                 .getReference("chat_room")
                 .push()
-                .setValue(new ChatMessage(userName, msg, userEmail))
+                .setValue(new ChatMessage(userName, msg, userEmail, uesrColor))
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {

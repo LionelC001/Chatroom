@@ -1,11 +1,15 @@
 package com.lionel.chatroom.chat.adapter;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -13,12 +17,14 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.lionel.chatroom.R;
 import com.lionel.chatroom.chat.model.ChatMessage;
+import com.lionel.chatroom.chat.model.ChatMessageBoxColor;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, ChatRecyclerAdapter.ViewHolder>
         implements IChatRecyclerAdapter {
+    private Context mContext;
     private String userEmail;
     private String date;
     private List<String> dateList;  //用來記錄出現過的訊息日期
@@ -31,6 +37,7 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private RelativeLayout mSpeechBubbleLeft, mSpeechBubbleRight;
+        private LinearLayout mLLMsgLeft;
         private TextView mTxtNameLeft, mTxtMsgLeft, mTxtTimeLeft,
                 mTxtMsgRight, mTxtTimeRight, mTxtDate;
 
@@ -44,13 +51,15 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
             mTxtTimeLeft = itemView.findViewById(R.id.txt_time_left);
             mTxtTimeRight = itemView.findViewById(R.id.txt_time_right);
             mTxtDate = itemView.findViewById(R.id.txt_date);
+            mLLMsgLeft = itemView.findViewById(R.id.ll_msg_left);
         }
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        mContext = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.item_chat_message, parent, false);
         return new ViewHolder(view);
     }
@@ -59,16 +68,23 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull ChatMessage model) {
         // 如果是使用者發出的訊息,一律顯示在右側
         if (model.getEmail().equals(userEmail)) {
-            holder.mSpeechBubbleLeft.setVisibility(View.GONE);
             holder.mSpeechBubbleRight.setVisibility(View.VISIBLE);
             holder.mTxtMsgRight.setText(model.getMessage());
             holder.mTxtTimeRight.setText(DateFormat.format("HH:mm", model.getTime()));
+
+            holder.mSpeechBubbleLeft.setVisibility(View.GONE);
         } else {
             holder.mSpeechBubbleLeft.setVisibility(View.VISIBLE);
-            holder.mSpeechBubbleRight.setVisibility(View.GONE);
             holder.mTxtNameLeft.setText(model.getName());
             holder.mTxtMsgLeft.setText(model.getMessage());
             holder.mTxtTimeLeft.setText(DateFormat.format("HH:mm", model.getTime()));
+            //依據不同的使用者, 設定不同的對話框顏色
+            GradientDrawable shape = (GradientDrawable) mContext.getResources().getDrawable(R.drawable.bg_chat_message_box_left);
+            String color = ChatMessageBoxColor.getColor(model.getUserColor());
+            shape.setColor(Color.parseColor(color));
+            holder.mLLMsgLeft.setBackground(shape);
+
+            holder.mSpeechBubbleRight.setVisibility(View.GONE);
         }
 
         // 記下訊息的日期

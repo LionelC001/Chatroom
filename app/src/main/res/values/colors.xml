@@ -9,4 +9,5 @@
     <color name="colorDialogProgress">#fb604b</color>
     <color name="colorLoginInputBox">#d8d6d6d1</color>
     <color name="colorDialogOnlineUser">#caffffff</color>
+    <color name="coloChatMessageBox">#dddddd</color>
 </resources>

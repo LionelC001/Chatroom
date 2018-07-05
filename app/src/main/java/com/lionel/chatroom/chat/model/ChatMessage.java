@@ -1,19 +1,20 @@
 package com.lionel.chatroom.chat.model;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class ChatMessage {
     private String name, message, email;
     private long time;
+    private int userColor;
 
     ChatMessage() {
     }
 
-    ChatMessage(String name, String message, String email) {
+    ChatMessage(String name, String message, String email, int userColor) {
         this.name = name;
         this.message = message;
         this.email = email;
+        this.userColor = userColor;
         this.time = Calendar.getInstance().getTimeInMillis();
     }
 
@@ -25,9 +26,15 @@ public class ChatMessage {
         return message;
     }
 
-    public String getEmail() { return email;}
+    public String getEmail() {
+        return email;
+    }
 
     public long getTime() {
         return time;
+    }
+
+    public int getUserColor() {
+        return userColor;
     }
 }

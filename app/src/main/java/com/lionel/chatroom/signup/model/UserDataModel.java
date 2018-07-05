@@ -2,16 +2,18 @@ package com.lionel.chatroom.signup.model;
 
 public class UserDataModel {
 
+    private int colorIndex;
     private String name, email;
     private Boolean isOnline;
 
     public UserDataModel() {
     }
 
-    public UserDataModel(String name, String email) {
+    public UserDataModel(String name, String email, int index) {
         this.name = name;
         this.email = email;
         this.isOnline = false;
+        this.colorIndex = index;
     }
 
     public String getName() {
@@ -36,5 +38,13 @@ public class UserDataModel {
 
     public boolean getIsOnline() {
         return isOnline;
+    }
+
+    public void setColorIndex(int index) {
+        colorIndex = index;
+    }
+
+    public int getColorIndex() {
+        return colorIndex;
     }
 }

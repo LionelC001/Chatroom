@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
     android:orientation="vertical">
 
     <TextView
@@ -46,7 +47,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/bg_chat_bubble_left"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -55,8 +55,9 @@
                     style="@style/ChatTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
                     android:maxEms="12"
-                    android:padding="10dp"
                     tools:text="MESSAGE" />
             </LinearLayout>
 
@@ -86,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/bg_chat_bubble_right"
+                android:background="@drawable/bg_chat_message_box_right"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -96,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="10dp"
                     android:maxEms="11"
                     tools:text="MESSAGE" />
             </LinearLayout>

@@ -243,6 +243,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                 .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        chatPresenter.updateOfflineUserState();
                         finish();
                     }
                 })

@@ -92,7 +92,7 @@ public class ChatPresenterImpl implements IChatPresenter {
     public void onLogoutSuccess() {
         chatView.onLogoutSuccess();
         //使用者登出成功,更新成下線狀態
-        chatModel.updateOnlineUserState(false);
+        updateOfflineUserState();
     }
 
     @Override
@@ -110,7 +110,10 @@ public class ChatPresenterImpl implements IChatPresenter {
     @Override
     public void quitChatRoom() {
         chatView.showQuitMessage();
+    }
 
+    @Override
+    public void updateOfflineUserState() {
         //使用者離開聊天室,更新成下線狀態
         chatModel.updateOnlineUserState(false);
     }
