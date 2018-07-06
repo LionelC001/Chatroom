@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -122,6 +123,8 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
             adapter.startListening();
             adapter.registerAdapterDataObserver(adapterDataObserver);
         }
+
+        chatPresenter.updateOnlineUserState(true);
     }
 
     @Override
@@ -131,6 +134,8 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
             adapter.stopListening();
             adapter.unregisterAdapterDataObserver(adapterDataObserver);
         }
+
+        chatPresenter.updateOnlineUserState(false);
     }
 
     @Override
@@ -189,12 +194,6 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     }
 
     @Override
-    public void onLogoutSuccess() {
-        Toast.makeText(this, "已成功登出", Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    @Override
     public void showProgress() {
         AlertDialog.Builder adBuilder = new AlertDialog.Builder(ChatActivity.this);
         progress = adBuilder.create();
@@ -243,7 +242,6 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                 .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        chatPresenter.updateOfflineUserState();
                         finish();
                     }
                 })
@@ -267,5 +265,11 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
                 .show();
 
         dialog.getWindow().setWindowAnimations(R.style.AnimDialog);
+    }
+
+    @Override
+    public void onLogoutSuccess() {
+        Toast.makeText(this, "已成功登出", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

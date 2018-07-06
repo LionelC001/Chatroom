@@ -48,6 +48,6 @@ public interface IChatPresenter {
     //回傳製作好的Adapter
     void onOnlineUserListResult(List<Map<String, Object>> userList);
 
-    //更新使用者下線狀態
-    void updateOfflineUserState();
+    //更新使用者上線狀態
+    void updateOnlineUserState(boolean isOnline);
 }
