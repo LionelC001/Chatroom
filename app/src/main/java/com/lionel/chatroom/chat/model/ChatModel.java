@@ -35,8 +35,10 @@ public class ChatModel implements IChatModel {
 
     @Override
     public void needUserData() {
+        //使用者本人的登記信箱
         userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
+        //以此信箱來比對使用者資料
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("user")
@@ -131,8 +133,15 @@ public class ChatModel implements IChatModel {
                         for (DataSnapshot element : dataSnapshot.getChildren()) {
                             UserDataModel user = element.getValue(UserDataModel.class);
                             Map<String, Object> map = new HashMap<>();
-                            map.put("img_online_user", R.drawable.ic_chat_online_user_person);
                             map.put("txt_online_user", user.getName());
+
+                            //如果是使用者本人, 則用別種顏色的頭像
+                            if (user.getName().equals(userName)) {
+                                map.put("img_online_user", R.drawable.ic_chat_online_user_person_blue);
+                            } else {
+                                map.put("img_online_user", R.drawable.ic_chat_online_user_person);
+                            }
+
                             listOnlineUser.add(map);
                         }
                         chatPresenter.onOnlineUserListResult(listOnlineUser);
