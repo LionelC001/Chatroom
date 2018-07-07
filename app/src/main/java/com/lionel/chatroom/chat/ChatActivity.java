@@ -1,8 +1,11 @@
 package com.lionel.chatroom.chat;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +25,8 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.lionel.chatroom.R;
 import com.lionel.chatroom.chat.adapter.ChatRecyclerAdapter;
 import com.lionel.chatroom.chat.listener.MyAdapterDataObserver;
@@ -31,7 +36,10 @@ import com.lionel.chatroom.chat.presenter.IChatPresenter;
 import com.lionel.chatroom.chat.view.ChatOnlineUserDialog;
 import com.lionel.chatroom.chat.view.IChatView;
 
+import java.net.URI;
+
 public class ChatActivity extends AppCompatActivity implements IChatView {
+    private static final int REQUEST_PICK_IMAGE = 995;
     private IChatPresenter chatPresenter;
     private EditText mEdtMsg;
     private RecyclerView mRecyclerViewChat;
@@ -50,7 +58,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     }
 
     private void initView() {
-        mEdtMsg = findViewById(R.id.edt_chat_msg);
+        mEdtMsg = findViewById(R.id.edt_chat_input_box);
         mRecyclerViewChat = findViewById(R.id.recycler_view_chat);
         mTxtDate = findViewById(R.id.txt_date);
 
@@ -157,10 +165,30 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     }
 
     //發送訊息
-    public void onSend(View view) {
+    public void onSendMessage(View view) {
         String msg = mEdtMsg.getText().toString();
         chatPresenter.sendMessage(msg);
         mEdtMsg.setText("");
+    }
+
+    //發送圖片,首先先選取圖片
+    public void onSendImage(View view) {
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+        startActivityForResult(pickIntent, REQUEST_PICK_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_PICK_IMAGE) {
+            if (resultCode == RESULT_OK) {
+                if (data!=null) {
+                    Uri uri = data.getData();
+                    Log.d("<<<", uri.toString());
+                }
+            }
+        }
     }
 
     @Override

@@ -41,42 +41,50 @@
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:padding="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_chat" />
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="@color/colorChatInputBox"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
-            android:id="@+id/btn_chat_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:onClick="onSend"
-            android:src="@drawable/ic_send_black" />
-
         <EditText
-            android:id="@+id/edt_chat_msg"
+            android:id="@+id/edt_chat_input_box"
             style="@style/ChatTextStyle"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/btn_chat_send"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
             android:background="@drawable/bg_chat_input_box"
-            android:ems="20"
             android:hint="請輸入訊息"
             android:inputType="textMultiLine" />
-    </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/btn_chat_send_image"
+            android:layout_width="36dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onSendImage"
+            android:src="@drawable/ic_chat_send_image" />
+
+        <ImageButton
+            android:id="@+id/btn_chat_send_message"
+            android:layout_width="36dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onSendMessage"
+            android:src="@drawable/ic_chat_send_message" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
