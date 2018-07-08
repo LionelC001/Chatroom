@@ -5,15 +5,20 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.lionel.chatroom.R;
 import com.lionel.chatroom.chat.listener.FirebaseDatabaseListener;
 import com.lionel.chatroom.chat.model.chat_massage.ChatMessage;
@@ -102,6 +107,60 @@ public class ChatModelFirebase implements IChatModelFirebase {
     }
 
     @Override
+    public void sendImage(Uri localImageUri) {
+        // 暫時的圖片訊息, 向使用者顯示圖片上傳進度
+        // 先用push()生成一子節點, 並取得其路徑
+        DatabaseReference imageMessageRef = FirebaseDatabase.getInstance()
+                .getReference("chat_room")
+                .push();
+
+        //取得剛剛push()所生成的唯一鍵
+        final String key = imageMessageRef.getKey();
+
+        //將訊息傳送到剛剛生成的路徑
+        imageMessageRef.setValue(new ChatMessage(userName, "", "temp", userEmail, userColor))
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        String msg = "圖片發送失敗";
+                        chatPresenter.onSendMessageFailure(msg);
+                    }
+                });
+
+        //將圖片上傳到Firebase Storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference imageRef = storage.getReference().child("image/" + localImageUri.getLastPathSegment());
+        imageRef.putFile(localImageUri)
+                .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        return imageRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    //取得圖片下載位置
+                    //並更新圖片訊息, 取代原本在database上的暫時圖片訊息
+                    Uri downloadUrl = task.getResult();
+
+                    FirebaseDatabase.getInstance()
+                            .getReference("chat_room")
+                            .child(key)
+                            .setValue(new ChatMessage(userName, "", downloadUrl.toString(), userEmail, userColor))
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    String msg = "圖片發送失敗";
+                                    chatPresenter.onSendMessageFailure(msg);
+                                }
+                            });
+                }
+            }
+        });
+    }
+
+    @Override
     public void sendMessage(String msg) {
         FirebaseDatabase.getInstance()
                 .getReference("chat_room")
@@ -111,22 +170,6 @@ public class ChatModelFirebase implements IChatModelFirebase {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         String msg = "訊息發送失敗";
-                        chatPresenter.onSendMessageFailure(msg);
-                    }
-                });
-    }
-
-    @Override
-    public void sendImage(Uri localImageUri) {
-        // 暫時的圖片訊息, 向使用者顯示圖片上傳進度
-        FirebaseDatabase.getInstance()
-                .getReference("chat_room")
-                .push()
-                .setValue(new ChatMessage(userName, "", "", userEmail, userColor))
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        String msg = "圖片發送失敗";
                         chatPresenter.onSendMessageFailure(msg);
                     }
                 });
@@ -173,6 +216,7 @@ public class ChatModelFirebase implements IChatModelFirebase {
                 .child(userEmail.replace(".", ""))
                 .child("isOnline")
                 .setValue(is);
+
     }
 
     @Override

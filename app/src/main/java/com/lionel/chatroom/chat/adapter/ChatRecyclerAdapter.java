@@ -9,12 +9,16 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.lionel.chatroom.R;
+import com.lionel.chatroom.chat.listener.ImageMessageClickListener;
 import com.lionel.chatroom.chat.model.chat_massage.ChatMessage;
 import com.lionel.chatroom.chat.model.chat_massage.ChatMessageBoxColor;
 
@@ -35,6 +39,8 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView mImgMsgLeft, mImgMsgRight;
+        private ProgressBar mImgMsgRightLoading;
         private RelativeLayout mSpeechBubbleLeft, mSpeechBubbleRight, mRLMsgLeft;
         private TextView mTxtNameLeft, mTxtMsgLeft, mTxtTimeLeft,
                 mTxtMsgRight, mTxtTimeRight, mTxtDate;
@@ -50,6 +56,9 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
             mTxtTimeRight = itemView.findViewById(R.id.txt_time_right);
             mTxtDate = itemView.findViewById(R.id.txt_date);
             mRLMsgLeft = itemView.findViewById(R.id.rl_msg_left);
+            mImgMsgLeft = itemView.findViewById(R.id.img_msg_left);
+            mImgMsgRight = itemView.findViewById(R.id.img_msg_right);
+            mImgMsgRightLoading = itemView.findViewById(R.id.img_msg_right_loading);
         }
     }
 
@@ -64,27 +73,17 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull ChatMessage model) {
-        // 如果是使用者發出的訊息,一律顯示在右側
-        if (model.getEmail().equals(userEmail)) {
-            holder.mSpeechBubbleRight.setVisibility(View.VISIBLE);
-            holder.mTxtMsgRight.setText(model.getMessage());
-            holder.mTxtTimeRight.setText(DateFormat.format("HH:mm", model.getTime()));
+        showDate(holder, position, model);
 
-            holder.mSpeechBubbleLeft.setVisibility(View.GONE);
+        //若ImageUri有資料, 表示為傳送圖片
+        if (!model.getImageUrl().equals("")) {
+            showImage(holder, model);
         } else {
-            holder.mSpeechBubbleLeft.setVisibility(View.VISIBLE);
-            holder.mTxtNameLeft.setText(model.getName());
-            holder.mTxtMsgLeft.setText(model.getMessage());
-            holder.mTxtTimeLeft.setText(DateFormat.format("HH:mm", model.getTime()));
-            //依據不同的使用者, 設定不同的對話框顏色
-            GradientDrawable shape = (GradientDrawable) mContext.getResources().getDrawable(R.drawable.bg_chat_message_box_left);
-            String color = ChatMessageBoxColor.getColor(model.getUserColor());
-            shape.setColor(Color.parseColor(color));
-            holder.mRLMsgLeft.setBackground(shape);
-
-            holder.mSpeechBubbleRight.setVisibility(View.GONE);
+            showMessage(holder, model);
         }
+    }
 
+    private void showDate(@NonNull ViewHolder holder, int position, @NonNull ChatMessage model) {
         // 記下訊息的日期
         date = DateFormat.format("MM-dd, EEEE", model.getTime()).toString();
         dateList.set(position, date);
@@ -95,6 +94,84 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
         if (isShowDateText(position)) {
             holder.mTxtDate.setVisibility(View.VISIBLE);
             holder.mTxtDate.setText(date);
+        }
+    }
+
+    private void showMessage(@NonNull ViewHolder holder, @NonNull ChatMessage model) {
+        // 如果是使用者發出的訊息,一律顯示在右側
+        if (model.getEmail().equals(userEmail)) {
+            holder.mSpeechBubbleRight.setVisibility(View.VISIBLE);
+            holder.mImgMsgRight.setVisibility(View.GONE);
+            holder.mImgMsgRightLoading.setVisibility(View.GONE);
+            holder.mTxtMsgRight.setVisibility(View.VISIBLE);
+            holder.mSpeechBubbleLeft.setVisibility(View.GONE);
+
+            holder.mTxtMsgRight.setText(model.getMessage());
+            holder.mTxtTimeRight.setText(DateFormat.format("HH:mm", model.getTime()));
+        } else {
+            holder.mSpeechBubbleLeft.setVisibility(View.VISIBLE);
+            holder.mImgMsgLeft.setVisibility(View.GONE);
+            holder.mTxtNameLeft.setText(model.getName());
+            holder.mTxtMsgLeft.setVisibility(View.VISIBLE);
+            holder.mSpeechBubbleRight.setVisibility(View.GONE);
+
+            holder.mTxtMsgLeft.setText(model.getMessage());
+            holder.mTxtTimeLeft.setText(DateFormat.format("HH:mm", model.getTime()));
+
+            //依據不同的使用者, 設定不同的對話框顏色
+            GradientDrawable shape = (GradientDrawable) mContext.getResources().getDrawable(R.drawable.bg_chat_message_box_left);
+            String color = ChatMessageBoxColor.getColor(model.getUserColor());
+            shape.setColor(Color.parseColor(color));
+            holder.mRLMsgLeft.setBackground(shape);
+        }
+    }
+
+    private void showImage(@NonNull ViewHolder holder, @NonNull ChatMessage model) {
+        // 如果是使用者發出的訊息,一律顯示在右側
+        if (model.getEmail().equals(userEmail)) {
+            holder.mSpeechBubbleRight.setVisibility(View.VISIBLE);
+            holder.mTxtMsgRight.setVisibility(View.GONE);
+            holder.mSpeechBubbleLeft.setVisibility(View.GONE);
+
+            holder.mTxtTimeRight.setText(DateFormat.format("HH:mm", model.getTime()));
+
+            //如果資料來源來自firebase storage, 則使用Glide讀取圖片
+            //隱藏讀取狀態
+            if (model.getImageUrl().startsWith("https://firebasestorage.googleapis.com/")) {
+                holder.mImgMsgRight.setVisibility(View.VISIBLE);
+                holder.mImgMsgRightLoading.setVisibility(View.GONE);
+                holder.mImgMsgRight.setOnClickListener(new ImageMessageClickListener(mContext, model.getImageUrl()));
+                Glide.with(mContext)
+                        .load(model.getImageUrl())
+                        .into(holder.mImgMsgRight);
+            } else {
+                //否則代表正在上傳中,則顯示讀取狀態
+                holder.mImgMsgRight.setVisibility(View.GONE);
+                holder.mImgMsgRightLoading.setVisibility(View.VISIBLE);
+            }
+        } else { //非使用者本人, 顯示在左側
+            holder.mSpeechBubbleLeft.setVisibility(View.VISIBLE);
+            holder.mTxtMsgLeft.setVisibility(View.GONE);
+            holder.mSpeechBubbleRight.setVisibility(View.GONE);
+
+            holder.mTxtNameLeft.setText(model.getName());
+            holder.mTxtTimeLeft.setText(DateFormat.format("HH:mm", model.getTime()));
+
+            //依據不同的使用者, 設定不同的對話框顏色
+            GradientDrawable shape = (GradientDrawable) mContext.getResources().getDrawable(R.drawable.bg_chat_message_box_left);
+            String color = ChatMessageBoxColor.getColor(model.getUserColor());
+            shape.setColor(Color.parseColor(color));
+            holder.mRLMsgLeft.setBackground(shape);
+
+            //如果資料來源來自FirebaseStorage, 則使用Glide讀取圖片
+            if (model.getImageUrl().startsWith("https://firebasestorage.googleapis.com/")) {
+                holder.mImgMsgLeft.setVisibility(View.VISIBLE);
+                holder.mImgMsgLeft.setOnClickListener(new ImageMessageClickListener(mContext, model.getImageUrl()));
+
+                Glide.with(mContext)
+                        .load(model.getImageUrl())
+                        .into(holder.mImgMsgLeft);
+            }
         }
     }
 

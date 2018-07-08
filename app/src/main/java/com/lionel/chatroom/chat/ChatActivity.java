@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,8 +24,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.lionel.chatroom.R;
 import com.lionel.chatroom.chat.adapter.ChatRecyclerAdapter;
 import com.lionel.chatroom.chat.listener.MyAdapterDataObserver;
@@ -35,8 +32,6 @@ import com.lionel.chatroom.chat.presenter.ChatPresenterImpl;
 import com.lionel.chatroom.chat.presenter.IChatPresenter;
 import com.lionel.chatroom.chat.view.ChatOnlineUserDialog;
 import com.lionel.chatroom.chat.view.IChatView;
-
-import java.net.URI;
 
 public class ChatActivity extends AppCompatActivity implements IChatView {
     private static final int REQUEST_PICK_IMAGE = 995;
@@ -182,11 +177,11 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_PICK_IMAGE) {
+        if (requestCode == REQUEST_PICK_IMAGE) {
             if (resultCode == RESULT_OK) {
-                if (data!=null) {
+                if (data != null) {
                     Uri uri = data.getData();
-                    Log.d("<<<", uri.toString());
+                    chatPresenter.sendImage(uri);
                 }
             }
         }
