@@ -1,8 +1,10 @@
 package com.lionel.chatroom.chat.model;
 
+import android.net.Uri;
+
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
-public interface IChatModel {
+public interface IChatModelFirebase {
     //從Firebase Database 取得使用者帳號與名稱
     void needUserData();
 
@@ -21,12 +23,15 @@ public interface IChatModel {
     //發送訊息
     void sendMessage(String msg);
 
-    //登出帳號
-    void logout();
+    //發送圖片
+    void sendImage(Uri localImageUri);
 
     //取得正在線上的成員名字
     void needOnlineUserList();
 
     //更新成員是否在線上
     void updateOnlineUserState(Boolean isOnline);
+
+    //登出帳號
+    void logout();
 }

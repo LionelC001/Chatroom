@@ -1,16 +1,18 @@
-package com.lionel.chatroom.chat.model;
+package com.lionel.chatroom.chat.model.chat_massage;
+
+import android.net.Uri;
 
 import java.util.Calendar;
 
 public class ChatMessage {
-    private String name, message, email;
+    private String name, message, imageUri, email;
     private long time;
     private int userColor;
 
-    ChatMessage() {
+    public ChatMessage() {
     }
 
-    ChatMessage(String name, String message, String email, int userColor) {
+    public ChatMessage(String name, String message, String imageUri, String email, int userColor) {
         this.name = name;
         this.message = message;
         this.email = email;
@@ -26,6 +28,10 @@ public class ChatMessage {
         return message;
     }
 
+    public String getImageUri() {
+        return imageUri;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -37,4 +43,5 @@ public class ChatMessage {
     public int getUserColor() {
         return userColor;
     }
+
 }

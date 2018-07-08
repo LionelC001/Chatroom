@@ -1,4 +1,4 @@
-package com.lionel.chatroom.chat.model;
+package com.lionel.chatroom.chat.model.chat_massage;
 
 public class ChatMessageBoxColor {
     private static String[] color = new String[]{

@@ -1,5 +1,6 @@
 package com.lionel.chatroom.chat.model;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -15,6 +16,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.lionel.chatroom.R;
 import com.lionel.chatroom.chat.listener.FirebaseDatabaseListener;
+import com.lionel.chatroom.chat.model.chat_massage.ChatMessage;
 import com.lionel.chatroom.chat.presenter.IChatPresenter;
 import com.lionel.chatroom.signup.model.UserDataModel;
 
@@ -23,13 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ChatModel implements IChatModel {
+public class ChatModelFirebase implements IChatModelFirebase {
     private IChatPresenter chatPresenter;
     private String userName, userEmail;
     private FirebaseRecyclerOptions<ChatMessage> options;
     private int userColor;
 
-    public ChatModel(IChatPresenter presenter) {
+    public ChatModelFirebase(IChatPresenter presenter) {
         chatPresenter = presenter;
     }
 
@@ -104,19 +106,30 @@ public class ChatModel implements IChatModel {
         FirebaseDatabase.getInstance()
                 .getReference("chat_room")
                 .push()
-                .setValue(new ChatMessage(userName, msg, userEmail, userColor))
+                .setValue(new ChatMessage(userName, msg, "", userEmail, userColor))
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        chatPresenter.onSendMessageFailure();
+                        String msg = "訊息發送失敗";
+                        chatPresenter.onSendMessageFailure(msg);
                     }
                 });
     }
 
     @Override
-    public void logout() {
-        FirebaseAuth.getInstance().signOut();
-        chatPresenter.onLogoutSuccess();
+    public void sendImage(Uri localImageUri) {
+        // 暫時的圖片訊息, 向使用者顯示圖片上傳進度
+        FirebaseDatabase.getInstance()
+                .getReference("chat_room")
+                .push()
+                .setValue(new ChatMessage(userName, "", "", userEmail, userColor))
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        String msg = "圖片發送失敗";
+                        chatPresenter.onSendMessageFailure(msg);
+                    }
+                });
     }
 
     @Override
@@ -160,5 +173,11 @@ public class ChatModel implements IChatModel {
                 .child(userEmail.replace(".", ""))
                 .child("isOnline")
                 .setValue(is);
+    }
+
+    @Override
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        chatPresenter.onLogoutSuccess();
     }
 }

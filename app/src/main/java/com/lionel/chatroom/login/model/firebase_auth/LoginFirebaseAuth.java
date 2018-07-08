@@ -1,4 +1,4 @@
-package com.lionel.chatroom.login.model.firebaseauth;
+package com.lionel.chatroom.login.model.firebase_auth;
 
 import android.support.annotation.NonNull;
 
@@ -10,11 +10,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.lionel.chatroom.login.model.ILoginModelManager;
 
-public class LoginModelFirebaseAuth implements ILoginModelFirebaseAuth {
+public class LoginFirebaseAuth implements ILoginFirebaseAuth {
     private final ILoginModelManager loginModelManager;
     private final FirebaseAuth mAuth;
 
-    public LoginModelFirebaseAuth(ILoginModelManager modelManager) {
+    public LoginFirebaseAuth(ILoginModelManager modelManager) {
         loginModelManager = modelManager;
         mAuth = FirebaseAuth.getInstance();
     }

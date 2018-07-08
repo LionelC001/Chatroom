@@ -1,6 +1,6 @@
-package com.lionel.chatroom.login.model.firebaseauth;
+package com.lionel.chatroom.login.model.firebase_auth;
 
-public interface ILoginModelFirebaseAuth {
+public interface ILoginFirebaseAuth {
     //使用者登入
     void login(String email, String password);
 

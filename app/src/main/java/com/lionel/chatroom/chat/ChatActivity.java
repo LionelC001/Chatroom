@@ -156,6 +156,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     @Override
     public void showMessageDate() {
         mTxtDate.setText(chatPresenter.fetchMessageDate());
+        mTxtDate.bringToFront();
         mTxtDate.setVisibility(View.VISIBLE);
     }
 

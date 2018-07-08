@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
-    android:orientation="vertical">
+    android:layout_marginBottom="5dp">
 
     <TextView
         android:id="@+id/txt_date"
         style="@style/ChatTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_chat_date"
-        android:textSize="13sp" />
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_date">
 
         <RelativeLayout
             android:id="@+id/speech_bubble_left"
@@ -41,14 +49,13 @@
                 android:textSize="12sp"
                 tools:text="NAME" />
 
-            <LinearLayout
-                android:id="@+id/ll_msg_left"
+            <RelativeLayout
+                android:id="@+id/rl_msg_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="20dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/txt_msg_left"
@@ -59,16 +66,25 @@
                     android:layout_marginStart="10dp"
                     android:maxEms="12"
                     tools:text="MESSAGE" />
-            </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/img_msg_left"
+                    android:layout_width="200dp"
+                    android:layout_height="150dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:scaleType="center"
+                    android:visibility="gone" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/txt_time_left"
                 style="@style/ChatTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/ll_msg_left"
+                android:layout_alignBottom="@+id/rl_msg_left"
                 android:layout_marginStart="8dp"
-                android:layout_toEndOf="@id/ll_msg_left"
+                android:layout_toEndOf="@id/rl_msg_left"
                 android:maxLines="1"
                 android:textSize="12sp"
                 tools:text="TIME" />
@@ -81,8 +97,8 @@
             android:layout_gravity="end"
             android:gravity="end">
 
-            <LinearLayout
-                android:id="@+id/ll_msg_right"
+            <RelativeLayout
+                android:id="@+id/rl_msg_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -100,19 +116,38 @@
                     android:layout_marginStart="10dp"
                     android:maxEms="11"
                     tools:text="MESSAGE" />
-            </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/img_msg_right"
+                    android:layout_width="200dp"
+                    android:layout_height="150dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:scaleType="center"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/img_msg_right_loading"
+                    android:layout_width="100dp"
+                    android:layout_height="65dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:indeterminateTint="@color/colorChatMessageImageLoading"
+                    android:visibility="gone" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/txt_time_right"
                 style="@style/ChatTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/ll_msg_right"
+                android:layout_alignBottom="@id/rl_msg_right"
                 android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@id/ll_msg_right"
+                android:layout_toStartOf="@id/rl_msg_right"
                 android:maxLines="1"
                 android:textSize="12sp"
                 tools:text="TIME" />
         </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

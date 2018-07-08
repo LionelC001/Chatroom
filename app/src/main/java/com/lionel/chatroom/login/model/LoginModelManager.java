@@ -2,20 +2,20 @@ package com.lionel.chatroom.login.model;
 
 import android.content.Context;
 
-import com.lionel.chatroom.login.model.firebaseauth.ILoginModelFirebaseAuth;
-import com.lionel.chatroom.login.model.firebaseauth.LoginModelFirebaseAuth;
+import com.lionel.chatroom.login.model.firebase_auth.ILoginFirebaseAuth;
+import com.lionel.chatroom.login.model.firebase_auth.LoginFirebaseAuth;
 import com.lionel.chatroom.login.model.preferences.ILoginModelPreferences;
 import com.lionel.chatroom.login.model.preferences.LoginModelPreferences;
 import com.lionel.chatroom.login.presenter.ILoginPresenter;
 
 public class LoginModelManager implements ILoginModelManager {
     private ILoginPresenter loginPresenter;
-    private ILoginModelFirebaseAuth loginModelFirebaseAuth;
+    private ILoginFirebaseAuth loginModelFirebaseAuth;
     private ILoginModelPreferences loginModelPreferences;
 
     public LoginModelManager(Context context, ILoginPresenter presenter) {
         this.loginPresenter = presenter;
-        this.loginModelFirebaseAuth = new LoginModelFirebaseAuth(this);
+        this.loginModelFirebaseAuth = new LoginFirebaseAuth(this);
         this.loginModelPreferences = new LoginModelPreferences(context, this);
     }
 

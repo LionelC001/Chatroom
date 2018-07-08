@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.widget.SimpleAdapter;
 
 import com.lionel.chatroom.R;
 import com.lionel.chatroom.chat.adapter.ChatRecyclerAdapter;
-import com.lionel.chatroom.chat.model.ChatModel;
-import com.lionel.chatroom.chat.model.IChatModel;
+import com.lionel.chatroom.chat.model.ChatModelFirebase;
+import com.lionel.chatroom.chat.model.IChatModelFirebase;
 import com.lionel.chatroom.chat.view.IChatView;
 
 import java.util.List;
@@ -17,12 +18,12 @@ import java.util.Map;
 
 public class ChatPresenterImpl implements IChatPresenter {
     private IChatView chatView;
-    private IChatModel chatModel;
+    private IChatModelFirebase chatModel;
     private ChatRecyclerAdapter adapter;
 
     public ChatPresenterImpl(IChatView view) {
         chatView = view;
-        chatModel = new ChatModel(ChatPresenterImpl.this);
+        chatModel = new ChatModelFirebase(ChatPresenterImpl.this);
     }
 
     @Override
@@ -64,8 +65,16 @@ public class ChatPresenterImpl implements IChatPresenter {
     }
 
     @Override
-    public void onSendMessageFailure() {
-        String msg = "訊息發送失敗";
+    public void sendImage(Uri localImageUri) {
+        if (isNetworkAvailable()) {
+            chatModel.sendImage(localImageUri);
+        } else {
+            chatView.showNeedNetwork();
+        }
+    }
+
+    @Override
+    public void onSendMessageFailure(String msg) {
         chatView.onSendMessageFailure(msg);
     }
 

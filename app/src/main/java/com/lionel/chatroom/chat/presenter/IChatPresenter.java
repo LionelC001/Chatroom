@@ -1,5 +1,7 @@
 package com.lionel.chatroom.chat.presenter;
 
+import android.net.Uri;
+
 import com.lionel.chatroom.chat.adapter.ChatRecyclerAdapter;
 
 import java.util.List;
@@ -9,8 +11,11 @@ public interface IChatPresenter {
     //通知Model發送訊息
     void sendMessage(String msg);
 
+    //通知Model準備發送圖片
+    void sendImage(Uri localImageUri);
+
     //發送訊息失敗
-    void onSendMessageFailure();
+    void onSendMessageFailure(String msg);
 
     // 準備RecyclerAdapter需要的參數
     void initAdapterParams();

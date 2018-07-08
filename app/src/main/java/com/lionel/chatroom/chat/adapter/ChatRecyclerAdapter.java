@@ -9,15 +9,14 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.lionel.chatroom.R;
-import com.lionel.chatroom.chat.model.ChatMessage;
-import com.lionel.chatroom.chat.model.ChatMessageBoxColor;
+import com.lionel.chatroom.chat.model.chat_massage.ChatMessage;
+import com.lionel.chatroom.chat.model.chat_massage.ChatMessageBoxColor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +35,7 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private RelativeLayout mSpeechBubbleLeft, mSpeechBubbleRight;
-        private LinearLayout mLLMsgLeft;
+        private RelativeLayout mSpeechBubbleLeft, mSpeechBubbleRight, mRLMsgLeft;
         private TextView mTxtNameLeft, mTxtMsgLeft, mTxtTimeLeft,
                 mTxtMsgRight, mTxtTimeRight, mTxtDate;
 
@@ -51,7 +49,7 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
             mTxtTimeLeft = itemView.findViewById(R.id.txt_time_left);
             mTxtTimeRight = itemView.findViewById(R.id.txt_time_right);
             mTxtDate = itemView.findViewById(R.id.txt_date);
-            mLLMsgLeft = itemView.findViewById(R.id.ll_msg_left);
+            mRLMsgLeft = itemView.findViewById(R.id.rl_msg_left);
         }
     }
 
@@ -82,7 +80,7 @@ public class ChatRecyclerAdapter extends FirebaseRecyclerAdapter<ChatMessage, Ch
             GradientDrawable shape = (GradientDrawable) mContext.getResources().getDrawable(R.drawable.bg_chat_message_box_left);
             String color = ChatMessageBoxColor.getColor(model.getUserColor());
             shape.setColor(Color.parseColor(color));
-            holder.mLLMsgLeft.setBackground(shape);
+            holder.mRLMsgLeft.setBackground(shape);
 
             holder.mSpeechBubbleRight.setVisibility(View.GONE);
         }
