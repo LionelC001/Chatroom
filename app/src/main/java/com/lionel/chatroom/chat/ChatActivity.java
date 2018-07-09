@@ -1,11 +1,16 @@
 package com.lionel.chatroom.chat;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +40,7 @@ import com.lionel.chatroom.chat.view.IChatView;
 
 public class ChatActivity extends AppCompatActivity implements IChatView {
     private static final int REQUEST_PICK_IMAGE = 995;
+    private static final int REQUEST_READ_STORAGE = 950;
     private IChatPresenter chatPresenter;
     private EditText mEdtMsg;
     private RecyclerView mRecyclerViewChat;
@@ -172,10 +178,33 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     }
 
     //發送圖片,首先先選取圖片
+    //先確認是否有讀取權限
     public void onSendImage(View view) {
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-        startActivityForResult(pickIntent, REQUEST_PICK_IMAGE);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_READ_STORAGE);
+        } else {
+            Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickIntent.setType("image/*");
+            startActivityForResult(pickIntent, REQUEST_PICK_IMAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case REQUEST_READ_STORAGE:
+                    onSendImage(new View(this));
+                    break;
+            }
+        } else {
+            Toast.makeText(this, "需要讀取權限", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
