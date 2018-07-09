@@ -1,5 +1,7 @@
 package com.lionel.chatroom.chat.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.lionel.chatroom.R;
@@ -35,9 +39,11 @@ public class ChatModelFirebase implements IChatModelFirebase {
     private String userName, userEmail;
     private FirebaseRecyclerOptions<ChatMessage> options;
     private int userColor;
+    private SharedPreferences resendImageSP;
 
-    public ChatModelFirebase(IChatPresenter presenter) {
+    public ChatModelFirebase(Context context, IChatPresenter presenter) {
         chatPresenter = presenter;
+        resendImageSP = context.getSharedPreferences("resend_image", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -107,57 +113,114 @@ public class ChatModelFirebase implements IChatModelFirebase {
     }
 
     @Override
-    public void sendImage(Uri localImageUri) {
-        // 暫時的圖片訊息, 向使用者顯示圖片上傳進度
-        // 先用push()生成一子節點, 並取得其路徑
+    public void sendImage(final Uri localImageUri, boolean isNeedResend) {
+        UploadTask uploadTask = null;
+
+        // FirebaseDatabase, 先用push()生成一子節點, 並取得其路徑
         DatabaseReference imageMessageRef = FirebaseDatabase.getInstance()
                 .getReference("chat_room")
                 .push();
 
         //取得剛剛push()所生成的唯一鍵
         final String key = imageMessageRef.getKey();
+        //檢查是否有舊的key, 若沒有則填入此key
+        if (resendImageSP.getString("key", null) == null) {
+            resendImageSP.edit().putString("key", key).apply();
+        }
 
-        //將訊息傳送到剛剛生成的路徑
-        imageMessageRef.setValue(new ChatMessage(userName, "", "temp", userEmail, userColor))
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        String msg = "圖片發送失敗";
-                        chatPresenter.onSendMessageFailure(msg);
-                    }
-                });
-
-        //將圖片上傳到Firebase Storage
+        //取得FirebaseStorage物件以及上傳路徑
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference imageRef = storage.getReference().child("image/" + localImageUri.getLastPathSegment());
-        imageRef.putFile(localImageUri)
-                .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        return imageRef.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    //取得圖片下載位置
-                    //並更新圖片訊息, 取代原本在database上的暫時圖片訊息
-                    Uri downloadUrl = task.getResult();
 
-                    FirebaseDatabase.getInstance()
-                            .getReference("chat_room")
-                            .child(key)
-                            .setValue(new ChatMessage(userName, "", downloadUrl.toString(), userEmail, userColor))
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    String msg = "圖片發送失敗";
-                                    chatPresenter.onSendMessageFailure(msg);
-                                }
-                            });
-                }
+        //如果不是重新上傳圖片, 用PutFile(Uri)上傳圖片
+        if (!isNeedResend) {
+            // 只有第一次才需要上傳暫時的圖片訊息, 向使用者顯示圖片正在上傳,
+            imageMessageRef.setValue(new ChatMessage(userName, "", "temp", userEmail, userColor))
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            String msg = "圖片發送失敗";
+                            chatPresenter.onSendMessageFailure(msg);
+                        }
+                    });
+
+            //將圖片上傳到Firebase Storage
+            uploadTask = imageRef.putFile(localImageUri);
+        } else {
+            //如果是重新上傳圖片, 則用putFile(Uri, StorageMetadata, sessionUri)上傳圖片
+            String sessionUri = resendImageSP.getString("resend_session", null);
+            if (sessionUri != null) {
+                uploadTask = imageRef.putFile(localImageUri, new StorageMetadata.Builder().build(), Uri.parse(sessionUri));
             }
-        });
+        }
+
+        //傾聽上傳任務的事件
+        if (uploadTask != null) {
+            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    //取得此上傳任務的上傳會話
+                    Uri sessionUri = taskSnapshot.getUploadSessionUri();
+                    if (sessionUri != null) {
+                        resendImageSP.edit()
+                                .putBoolean("need_resend", true)
+                                .putString("local_image", localImageUri.toString())
+                                .putString("resend_session", sessionUri.toString())
+                                .apply();
+                    }
+                }
+            }).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    return imageRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        //取得圖片下載位置
+                        //並更新圖片訊息, 取代原本在database上的暫時圖片訊息
+                        Uri downloadUrl = task.getResult();
+
+                        //若資料庫裡有key, 則用此key做路徑
+                        String path = key;
+                        String oldKey = resendImageSP.getString("key", null);
+                        if (oldKey != null) {
+                            path = oldKey;
+                        }
+                        FirebaseDatabase.getInstance()
+                                .getReference("chat_room")
+                                .child(path)
+                                .setValue(new ChatMessage(userName, "", downloadUrl.toString(), userEmail, userColor))
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        String msg = "圖片發送失敗";
+                                        chatPresenter.onSendMessageFailure(msg);
+                                    }
+                                });
+
+                        //若傳送圖片成功,則表示不需要再重新傳送
+                        //重置資料庫裡FirebaseDatabase的key
+                        resendImageSP.edit()
+                                .putBoolean("need_resend", false)
+                                .putString("key", null)
+                                .apply();
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void checkResendImage() {
+        boolean isNeedResend = resendImageSP.getBoolean("need_resend", false);
+        if (isNeedResend) {
+            String localImageUri = resendImageSP.getString("local_image", null);
+            if (localImageUri != null) {
+                chatPresenter.sendImage(Uri.parse(localImageUri), true);
+            }
+        }
     }
 
     @Override

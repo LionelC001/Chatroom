@@ -47,7 +47,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        chatPresenter = new ChatPresenterImpl(this);
+        chatPresenter = new ChatPresenterImpl(this, this);
 
         initView();
     }
@@ -127,7 +127,11 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
             adapter.registerAdapterDataObserver(adapterDataObserver);
         }
 
+        //每次啟動都會將使用者更新成上線
         chatPresenter.updateOnlineUserState(true);
+
+        //每次啟動都會檢查是否要重新上傳圖片
+        chatPresenter.checkResendImage();
     }
 
     @Override
@@ -181,7 +185,7 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
                     Uri uri = data.getData();
-                    chatPresenter.sendImage(uri);
+                    chatPresenter.sendImage(uri, false);
                 }
             }
         }

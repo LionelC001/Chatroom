@@ -21,9 +21,9 @@ public class ChatPresenterImpl implements IChatPresenter {
     private IChatModelFirebase chatModel;
     private ChatRecyclerAdapter adapter;
 
-    public ChatPresenterImpl(IChatView view) {
+    public ChatPresenterImpl(Context context, IChatView view) {
         chatView = view;
-        chatModel = new ChatModelFirebase(ChatPresenterImpl.this);
+        chatModel = new ChatModelFirebase(context, ChatPresenterImpl.this);
     }
 
     @Override
@@ -65,12 +65,17 @@ public class ChatPresenterImpl implements IChatPresenter {
     }
 
     @Override
-    public void sendImage(Uri localImageUri) {
+    public void sendImage(Uri localImageUri, boolean isNeedResend) {
         if (isNetworkAvailable()) {
-            chatModel.sendImage(localImageUri);
+            chatModel.sendImage(localImageUri, isNeedResend);
         } else {
             chatView.showNeedNetwork();
         }
+    }
+
+    @Override
+    public void checkResendImage() {
+        chatModel.checkResendImage();
     }
 
     @Override
@@ -123,7 +128,11 @@ public class ChatPresenterImpl implements IChatPresenter {
 
     @Override
     public void needOnlineUserList() {
-        chatModel.needOnlineUserList();
+        if (isNetworkAvailable()) {
+            chatModel.needOnlineUserList();
+        } else {
+            chatView.showNeedNetwork();
+        }
     }
 
     @Override

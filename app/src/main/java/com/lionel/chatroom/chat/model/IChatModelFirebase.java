@@ -24,7 +24,10 @@ public interface IChatModelFirebase {
     void sendMessage(String msg);
 
     //發送圖片
-    void sendImage(Uri localImageUri);
+    void sendImage(Uri localImageUri, boolean isNeedResend);
+
+    //檢查是否要重新上傳圖片
+    void checkResendImage();
 
     //取得正在線上的成員名字
     void needOnlineUserList();

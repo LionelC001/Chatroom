@@ -12,7 +12,10 @@ public interface IChatPresenter {
     void sendMessage(String msg);
 
     //通知Model準備發送圖片
-    void sendImage(Uri localImageUri);
+    void sendImage(Uri localImageUri, boolean isNeedResend);
+
+    //檢查是否需要重新上傳圖片
+    void checkResendImage();
 
     //發送訊息失敗
     void onSendMessageFailure(String msg);
