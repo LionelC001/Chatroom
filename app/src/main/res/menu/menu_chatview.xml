@@ -5,12 +5,14 @@
         android:id="@+id/menu_chatview_change_name"
         android:title="更改名稱"
         app:showAsAction="never" />
-
+    <item
+        android:id="@+id/menu_chatview_show_intro"
+        android:title="新手指引"
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_chatview_log_out"
         android:title="登出"
         app:showAsAction="never" />
-
     <item
         android:id="@+id/menu_show_online_user"
         android:icon="@drawable/ic_chat_online_user_people"

@@ -20,9 +20,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -37,6 +40,10 @@ import com.lionel.chatroom.chat.presenter.ChatPresenterImpl;
 import com.lionel.chatroom.chat.presenter.IChatPresenter;
 import com.lionel.chatroom.chat.view.ChatOnlineUserDialog;
 import com.lionel.chatroom.chat.view.IChatView;
+import com.takusemba.spotlight.SimpleTarget;
+import com.takusemba.spotlight.Spotlight;
+
+import java.util.List;
 
 public class ChatActivity extends AppCompatActivity implements IChatView {
     private static final int REQUEST_PICK_IMAGE = 995;
@@ -48,6 +55,9 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     private MyAdapterDataObserver adapterDataObserver;
     private TextView mTxtDate;
     private AlertDialog progress;
+    private ImageButton mBtnChatSendImg, mBtnChatSendMsg;
+    private View mMenuShowOnlineUser;
+    private View mMenuHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +72,26 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         mEdtMsg = findViewById(R.id.edt_chat_input_box);
         mRecyclerViewChat = findViewById(R.id.recycler_view_chat);
         mTxtDate = findViewById(R.id.txt_date);
+        mBtnChatSendImg = findViewById(R.id.btn_chat_send_image);
+        mBtnChatSendMsg = findViewById(R.id.btn_chat_send_message);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_chat);
+        final Toolbar toolbar = findViewById(R.id.toolbar_chat);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        //取得MenuItem的引用
+        final ViewTreeObserver viewTreeObserver = getWindow().getDecorView().getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mMenuShowOnlineUser = findViewById(R.id.menu_show_online_user);
+                mMenuHome = toolbar.getChildAt(0);
+                if (viewTreeObserver.isAlive()) {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
 
         needRecyclerAdapter();
     }
@@ -111,6 +136,9 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
         switch (item.getItemId()) {
             case R.id.menu_chatview_change_name:
                 changeUserName();
+                break;
+            case R.id.menu_chatview_show_intro:
+                showIntro();
                 break;
             case R.id.menu_chatview_log_out:
                 showLogoutMessage();
@@ -328,5 +356,16 @@ public class ChatActivity extends AppCompatActivity implements IChatView {
     public void onLogoutSuccess() {
         Toast.makeText(this, "已成功登出", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    public void showIntro() {
+        List<SimpleTarget> targets = chatPresenter.needIntroTargets(mEdtMsg, mBtnChatSendImg, mBtnChatSendMsg
+                , mRecyclerViewChat, mMenuShowOnlineUser, mMenuHome);
+        Spotlight.with(this)
+                .setDuration(700L)
+                .setAnimation(new DecelerateInterpolator(2f))
+                .setTargets(targets.get(0), targets.get(1), targets.get(2), targets.get(3), targets.get(4), targets.get(5))
+                .start();
     }
 }

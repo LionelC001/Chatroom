@@ -1,6 +1,5 @@
 package com.lionel.chatroom.chat.view;
 
-import android.widget.ArrayAdapter;
 import android.widget.SimpleAdapter;
 
 public interface IChatView {
@@ -26,6 +25,7 @@ public interface IChatView {
 
     //顯示進度畫面
     void showProgress();
+
     //關閉進度畫面
     void hideProgress();
 
@@ -37,4 +37,7 @@ public interface IChatView {
 
     //顯示線上成員
     void showOnlineUser(SimpleAdapter adapter);
+
+    //顯示新手教學
+    void showIntro();
 }

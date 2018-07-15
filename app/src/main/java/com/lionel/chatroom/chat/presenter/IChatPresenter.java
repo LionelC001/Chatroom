@@ -1,8 +1,10 @@
 package com.lionel.chatroom.chat.presenter;
 
 import android.net.Uri;
+import android.view.View;
 
 import com.lionel.chatroom.chat.adapter.ChatRecyclerAdapter;
+import com.takusemba.spotlight.SimpleTarget;
 
 import java.util.List;
 import java.util.Map;
@@ -58,4 +60,7 @@ public interface IChatPresenter {
 
     //更新使用者上線狀態
     void updateOnlineUserState(boolean isOnline);
+
+    //指定Intro的目標
+    List<SimpleTarget> needIntroTargets(View... views);
 }
