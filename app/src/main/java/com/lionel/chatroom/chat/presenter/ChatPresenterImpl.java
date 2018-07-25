@@ -173,7 +173,7 @@ public class ChatPresenterImpl implements IChatPresenter {
                 .build();
 
         SimpleTarget target4 = new SimpleTarget.Builder((Activity) chatView)
-                .setRadius(400f)
+                .setRadius(450f)
                 .setPoint(targets[3])
                 .setTitle("聊天內容會顯示在這裡")
                 .build();
