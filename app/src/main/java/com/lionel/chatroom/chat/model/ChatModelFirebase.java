@@ -279,7 +279,6 @@ public class ChatModelFirebase implements IChatModelFirebase {
                 .child(userEmail.replace(".", ""))
                 .child("isOnline")
                 .setValue(is);
-
     }
 
     @Override
