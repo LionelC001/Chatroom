@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.lionel.chatroom.R;
 
 public class ImageActivity extends AppCompatActivity {
@@ -20,7 +21,7 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     private void openImage() {
-        ImageView imgShowImage = findViewById(R.id.img_show_Image);
+        PhotoView imgShowImage = findViewById(R.id.img_show_Image);
         String imageUrl = getIntent().getStringExtra("image_url");
         Glide.with(ImageActivity.this)
                 .load(imageUrl)
