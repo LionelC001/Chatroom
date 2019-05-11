@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1080531044463-bck8o479fpb8usloskk6t32h8vehreu5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lionel.chatroom",
+            "certificate_hash": "af0c5a78d1a4afdbe00b27884954d096ed50fd4f"
+          }
+        },
+        {
           "client_id": "1080531044463-4in04hsvbbko6jgjo089sjjdbbmgaq4k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -33,20 +41,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "1080531044463-u2c75u0dsnsp21t2gu64m8rm6mis6c7k.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
